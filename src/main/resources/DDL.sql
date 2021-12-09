@@ -19,7 +19,7 @@ on update no action on delete cascade
 create table if not exists Accounts (
 id serial,
 money decimal(20,2),
-account_number varchar(28),
+account_number varchar(28) not null unique,
 lock_status boolean not null default false,
 bank_id bigint unsigned not null,
 primary key (id),
@@ -29,7 +29,7 @@ on update no action on delete cascade
 
 create table if not exists Cards (
 id serial,
-card_number varchar(16) not null,
+card_number varchar(16) not null unique,
 pin varchar(4) not null,
 account_id bigint unsigned not null,
 primary key (id),
