@@ -1,3 +1,4 @@
+drop database if exists atm;
 create database atm;
 use atm;
 
