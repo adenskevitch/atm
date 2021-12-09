@@ -1,5 +1,6 @@
 create database atm;
 use atm;
+drop database atm;
 
 create table if not exists Banks (
 id serial,
@@ -29,8 +30,8 @@ on update no action on delete cascade
 
 create table if not exists Cards (
 id serial,
-card_number long not null,
-pin int unsigned not null,
+card_number varchar(16) not null,
+pin varchar(4) not null,
 account_id bigint unsigned not null,
 primary key (id),
 constraint fk_Cards_Account foreign key (account_id) references Accounts (id)
