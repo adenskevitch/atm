@@ -19,8 +19,8 @@ on update no action on delete cascade
 create table if not exists Accounts (
 id serial,
 money decimal(20,2),
-account_number int unsigned,
-lock_status boolean not null,
+account_number varchar(28),
+lock_status boolean not null default false,
 bank_id bigint unsigned not null,
 primary key (id),
 constraint fk_Accounts_Bank foreign key (bank_id) references Banks (id)
@@ -29,7 +29,7 @@ on update no action on delete cascade
 
 create table if not exists Cards (
 id serial,
-card_number int unsigned not null,
+card_number long not null,
 pin int unsigned not null,
 account_id bigint unsigned not null,
 primary key (id),
