@@ -1,6 +1,5 @@
 create database atm;
 use atm;
-drop database atm;
 
 create table if not exists Banks (
 id serial,
