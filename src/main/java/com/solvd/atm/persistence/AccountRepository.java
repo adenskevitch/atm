@@ -6,19 +6,19 @@ import org.apache.ibatis.annotations.Param;
 
 public interface AccountRepository {
 
-    //set account lock
+//    set account lock
     void blockAccount(Card card);
 
-    Account getAccountInfo(Card cardInfo);
+    Account getAccountInfo(Card card);
 
-    /**
-     * update account_money
-     * update atm_cash
-     */
+//    /**
+//     * update account_money
+//     * update atm_cash
+//     */
     void decrementAccountMoney(@Param("account") Account account, @Param("money") Integer money);
 
-    //set account unlock
-    void unblockAccount(Card card);
+//    set account unlock
+    void unblockAccount(Account account);
 
 }
 

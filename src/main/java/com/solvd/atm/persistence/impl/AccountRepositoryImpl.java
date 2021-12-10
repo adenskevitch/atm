@@ -16,9 +16,9 @@ public class AccountRepositoryImpl implements AccountRepository {
     }
 
     @Override
-    public Account getAccountInfo(Card cardInfo) {
+    public Account getAccountInfo(Card cardNumber) {
         try (SqlSession session = MyBatisSessionHolder.getSqlSessionFactory().openSession(true)) {
-            return session.getMapper(AccountRepository.class).getAccountInfo(cardInfo);
+            return session.getMapper(AccountRepository.class).getAccountInfo(cardNumber);
         }
     }
 
@@ -30,9 +30,9 @@ public class AccountRepositoryImpl implements AccountRepository {
     }
 
     @Override
-    public void unblockAccount(Card card) {
+    public void unblockAccount(Account account) {
         try (SqlSession session = MyBatisSessionHolder.getSqlSessionFactory().openSession(true)) {
-            session.getMapper(AccountRepository.class).unblockAccount(card);
+            session.getMapper(AccountRepository.class).unblockAccount(account);
         }
     }
 }

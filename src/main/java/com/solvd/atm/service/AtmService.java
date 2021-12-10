@@ -5,6 +5,8 @@ import com.solvd.atm.domain.Card;
 
 public interface AtmService {
 
+//    Atm getAtmInfo(Atm atm);
+
     /**
      * card object from main
      * block account
@@ -18,12 +20,12 @@ public interface AtmService {
      * quantity of many
      */
     void getMoney(Account account, Integer money);
-
-    /**
-     * finish work with current account
-     * aet accountLock to false
-     * current account set null
-     * current card set null
-     */
+//
+//    /**
+//     * finish work with current account
+//     * aet accountLock to false
+//     * current account set null
+//     * current card set null
+//     */
     void finishWork(Account account);
 }

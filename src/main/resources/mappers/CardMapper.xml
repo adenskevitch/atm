@@ -5,7 +5,7 @@
 <mapper namespace="com.solvd.atm.persistence.AccountRepository">
 
     <resultMap id="CardResultMap" type="Card" autoMapping="false">
-        <id property="id" column="card_id"/>
+        <id property="cardId" column="card_id"/>
         <result property="number" column="card_number"/>
         <result property="pin" column="card_pin"/>
     </resultMap>

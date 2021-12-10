@@ -5,12 +5,20 @@ import java.util.List;
 public class Account {
 
     private Long id;
-    private String accountNumber;
+    private String number;
     private Integer money;
     private List<Card> cards;
-    private Boolean lock_status;
+    private Boolean lockStatus;
 
-    public Account() {
+    @Override
+    public String toString() {
+        return "Account{" +
+                "id=" + id +
+                ", accountNumber='" + number + '\'' +
+                ", money=" + money +
+                ", cards=" + cards +
+                ", lock_status=" + lockStatus +
+                '}';
     }
 
     public Long getId() {
@@ -22,11 +30,11 @@ public class Account {
     }
 
     public String getAccountNumber() {
-        return accountNumber;
+        return number;
     }
 
     public void setAccountNumber(String accountNumber) {
-        this.accountNumber = accountNumber;
+        this.number = accountNumber;
     }
 
     public Integer getMoney() {
@@ -46,11 +54,11 @@ public class Account {
     }
 
     public Boolean getLock_status() {
-        return lock_status;
+        return lockStatus;
     }
 
     public void setLock_status(Boolean lock_status) {
-        this.lock_status = lock_status;
+        this.lockStatus = lock_status;
     }
 
 }

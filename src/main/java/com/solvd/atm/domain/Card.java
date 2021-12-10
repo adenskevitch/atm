@@ -3,34 +3,40 @@ package com.solvd.atm.domain;
 public class Card {
 
     private Long id;
-    private String cardNumber;
-    private String cardPin;
+    private String number;
+    private String pin;
 
-    public Card() {
+    @Override
+    public String toString() {
+        return "Card{" +
+                "cardId=" + id +
+                ", cardNumber='" + number + '\'' +
+                ", cardPin='" + pin + '\'' +
+                '}';
     }
 
-    public Long getId() {
+    public Long getCardId() {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setCardId(Long cardId) {
+        this.id = cardId;
     }
 
     public String getCardNumber() {
-        return cardNumber;
+        return number;
     }
 
     public void setCardNumber(String cardNumber) {
-        this.cardNumber = cardNumber;
+        this.number = cardNumber;
     }
 
     public String getCardPin() {
-        return cardPin;
+        return pin;
     }
 
     public void setCardPin(String cardPin) {
-        this.cardPin = cardPin;
+        this.pin = cardPin;
     }
 
 }

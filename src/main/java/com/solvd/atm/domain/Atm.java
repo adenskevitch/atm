@@ -5,9 +5,6 @@ public class Atm {
     private Long id;
     private Integer cash;
 
-    public Atm() {
-    }
-
     public Long getId() {
         return id;
     }

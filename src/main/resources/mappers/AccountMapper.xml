@@ -9,10 +9,10 @@
     </update>
 
     <sql id="setLock">
-        update Account a join Card c
+        update Accounts a join Cards c
         on c.account_id = a.id
-        set a.lock = true
-        where c.card_number = #{card.number}
+        set a.lock_status = true
+        where c.number = #{cardNumber}
     </sql>
 
     <select id="getAccountInfo" resultMap="AccountInfoResultMap">
@@ -25,14 +25,14 @@
     </select>
 
     <sql id="getInfoBody">
-        a.money as account_money, a.number as account_number, c.pin as card_pin
+	    a.number as account_number, a.money as account_money, c.number as card_number, c.pin as card_pin, a.lock_status as lock_status
     </sql>
     <sql id="getInfoJoins">
-        account a left join card c
+	    Accounts a left join Cards c
         on a.id = c.account_id
     </sql>
     <sql id="getInfoFilters">
-        card_number = #{card.number}
+        card_number = #{cardNumber}
     </sql>
 
     <update id="decrementAccountMoney">
@@ -40,9 +40,9 @@
     </update>
 
     <sql id="setMoney">
-    update Account a
-    set money = money - #{money}
-    where a.number = #{account.number}
+    update Accounts a
+    set money = #{money}
+    where a.number = #{account.accountNumber}
     </sql>
 
     <update id="unblockAccount">
@@ -50,17 +50,17 @@
     </update>
 
     <sql id="setUnlock">
-        update Account a join Card c
-        on c.account_id = a.id
-        set a.lock = false
-        where c.card_number = #{card.cardNumber}
+        update Accounts
+        set lock_status = false
+        where number = #{accountNumber}
     </sql>
 
     <resultMap id="AccountInfoResultMap" type="Account" autoMapping="false">
         <id property="id" column="account_id"/>
-        <result property="money" column="account_money"/>
-        <result property="number" column="account_number"/>
-        <collection property="cardsList" columnPrefix="account_"
+	    <result property="accountNumber" column="account_number"/>
+	    <result property="money" column="account_money"/>
+	    <result property="lock_status" column="lock_status"/>
+        <collection property="cards"
                     resultMap="com.solvd.atm.persistence.CardRepository.CardResultMap"/>
     </resultMap>
 </mapper>

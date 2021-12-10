@@ -9,9 +9,6 @@ public class Bank {
     private List<Atm> atms;
     private List<Account> accounts;
 
-    public Bank() {
-    }
-
     public Long getId() {
         return id;
     }
