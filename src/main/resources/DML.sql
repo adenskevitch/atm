@@ -6,18 +6,28 @@ insert into Banks (name) values
 ("Priorbank"),
 ("Belarusbank");
 
-insert into ATMs (cash, bank_id) values
-(345000, 1),
-(678900, 5),
-(548985, 2),
-(8364535, 1),
-(34563480, 3),
-(3456875, 2),
-(64563896, 4),
-(6748634, 5),
-(3426352, 1);
+insert into Addresses (city, street, building) values
+("Minsk","Denisovskaya","8/2"),
+("Minsk","Kirova","3"),
+("Minsk","Zhilunovicha", "4"),
+("Minsk","Partizansky","23"),
+("Minsk","Dzerzhinskogo","73a"),
+("Minsk","Nezavisimosti","99/4"),
+("Minsk","Mstislavca","11"),
+("Minsk","Makaenka","9");
 
-insert into Accounts (money, account_number, bank_id) values
+insert into ATMs (number,cash, bank_id, address_id) values
+("ALFA001",345000, 1, 1),
+("AKBB001",678900, 5, 6),
+("BVTB001",548985, 2, 3),
+("ALFA002",8364535, 1, 2),
+("DABR001",34563480, 3, 7),
+("BVTB002",3456875, 2, 4),
+("PRIO001",64563896, 4, 5),
+("AKBB002",6748634, 5, 8),
+("ALFA003",3426352, 1, 4);
+
+insert into Accounts (money, number, bank_id) values
 (35375.30, "BY01ALFA3012678905745789",1),
 (7659864.08, "BY26AKBB789564857645609",5),
 (634563966.53, "BY98ALFA405564784576870",1),
@@ -33,7 +43,7 @@ insert into Accounts (money, account_number, bank_id) values
 (8695.07, "BY73AKBB345943986471045",5),
 (6754856.46, "BY57DABR768941674073491",3);
 
-insert into Cards (card_number, pin, account_id) values 
+insert into Cards (number, pin, account_id) values 
 ("4578091276840365","4567",1),
 ("3456709774562548","9870",2),
 ("4657976503113769","1234",3),
