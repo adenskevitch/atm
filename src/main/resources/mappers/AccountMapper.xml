@@ -12,28 +12,18 @@
         update Accounts a join Cards c
         on c.account_id = a.id
         set a.lock_status = true
-        where c.number = #{cardNumber}
+        where c.number = #{number}
     </sql>
 
     <select id="getAccountInfo" resultMap="AccountInfoResultMap">
         Select
-        <include refid="getInfoBody"/>
+        a.number as account_number, a.money as account_money, c.number as card_number, c.pin as card_pin, a.lock_status as lock_status
         From
-        <include refid="getInfoJoins"/>
-        Where
-        <include refid="getInfoFilters"/>
-    </select>
-
-    <sql id="getInfoBody">
-	    a.number as account_number, a.money as account_money, c.number as card_number, c.pin as card_pin, a.lock_status as lock_status
-    </sql>
-    <sql id="getInfoJoins">
-	    Accounts a left join Cards c
+        Accounts a left join Cards c
         on a.id = c.account_id
-    </sql>
-    <sql id="getInfoFilters">
-        card_number = #{cardNumber}
-    </sql>
+        Where
+        c.number = #{number}
+    </select>
 
     <update id="decrementAccountMoney">
         <include refid="setMoney"/>
@@ -42,7 +32,7 @@
     <sql id="setMoney">
     update Accounts a
     set money = #{money}
-    where a.number = #{account.accountNumber}
+    where a.number = #{account.number}
     </sql>
 
     <update id="unblockAccount">
@@ -52,14 +42,14 @@
     <sql id="setUnlock">
         update Accounts
         set lock_status = false
-        where number = #{accountNumber}
+        where number = #{number}
     </sql>
 
     <resultMap id="AccountInfoResultMap" type="Account" autoMapping="false">
         <id property="id" column="account_id"/>
-	    <result property="accountNumber" column="account_number"/>
+	    <result property="number" column="account_number"/>
 	    <result property="money" column="account_money"/>
-	    <result property="lock_status" column="lock_status"/>
+	    <result property="lockStatus" column="lock_status"/>
         <collection property="cards"
                     resultMap="com.solvd.atm.persistence.CardRepository.CardResultMap"/>
     </resultMap>
