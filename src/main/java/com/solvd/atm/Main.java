@@ -22,11 +22,11 @@ public class Main {
         // 8354546509264896     2545
 
         // Creating Scanner object to read from input
-        Scanner scanner = new Scanner(System.in);
+        //Scanner scanner = new Scanner(System.in);
 
         // Creating card and set it value to null
         Card card = new Card();
-        card.setCardNumber(scanner.next());
+        card.setCardNumber("4578091276840365");
         card.setCardPin("4567");
 
         Atm atm = new Atm();
