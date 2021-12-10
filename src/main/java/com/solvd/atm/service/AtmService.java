@@ -3,6 +3,9 @@ package com.solvd.atm.service;
 import com.solvd.atm.domain.Account;
 import com.solvd.atm.domain.Card;
 
+import java.util.List;
+import java.util.Map;
+
 public interface AtmService {
 
 //    Atm getAtmInfo(Atm atm);
@@ -28,4 +31,7 @@ public interface AtmService {
 //     * current card set null
 //     */
     void finishWork(Account account);
+
+    public List<List<?>> moneyVariants(Map<Integer, Integer> cashInAtm, Integer requiredCash);
+
 }

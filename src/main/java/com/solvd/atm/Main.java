@@ -8,6 +8,9 @@ import com.solvd.atm.service.impl.AtmServiceImpl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 public class Main {
@@ -25,34 +28,29 @@ public class Main {
         //Scanner scanner = new Scanner(System.in);
 
         // Creating card and set it value to null
-        Card card = new Card();
-        card.setCardNumber("4578091276840365");
-        card.setCardPin("4567");
-
-        Atm atm = new Atm();
-
+//        Card card = new Card();
+//        card.setCardNumber("4578091276840365");
+//        card.setCardPin("4567");
+//
+//        Atm atm = new Atm();
+//
         AtmService atmService = new AtmServiceImpl();
-//        atm = atmService.getAtmInfo(atm);
-        Account account;
-        account = atmService.inputCard(card);
-        atmService.getMoney(account, 500);
-        atmService.finishWork(account);
-        System.out.println(account);
+////        atm = atmService.getAtmInfo(atm);
+//        Account account;
+//        account = atmService.inputCard(card);
+//        atmService.getMoney(account, 500);
+//        atmService.finishWork(account);
+//        System.out.println(account);
 
-        // Creating loop while user input valid data from DB
-//        while(insertedCard == null) {
-//            System.out.print("Input card number: ");
-//            String cardNumber = scanner.next();
-//
-//            // Searching in DB by inputted card number
-//            CardService cardService = new CardServiceImpl();
-//            insertedCard = cardService.cardData(cardNumber);
-//
-//            // If inputted card number not found in DB -> print message
-//            if (insertedCard == null) {
-//                System.out.println("Ivalid card number. Please try again.");
-//            }
-//
-//        }
+
+        Map<Integer, Integer> cashMap = new LinkedHashMap<>();
+        cashMap.put(200, 5);
+        cashMap.put(100, 5);
+        cashMap.put(50, 5);
+        cashMap.put(20, 5);
+        cashMap.put(10, 5);
+        cashMap.put(5, 5);
+        System.out.println(atmService.moneyVariants(cashMap, 15));
+
     }
 }
