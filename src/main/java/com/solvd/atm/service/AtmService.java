@@ -19,7 +19,8 @@ public interface AtmService {
      * quantity of many
      */
     void getMoney(Account account, Integer money);
-//
+
+    //
 //    /**
 //     * finish work with current account
 //     * aet accountLock to false
@@ -27,4 +28,5 @@ public interface AtmService {
 //     * current card set null
 //     */
     void finishWork(Account account);
+
 }

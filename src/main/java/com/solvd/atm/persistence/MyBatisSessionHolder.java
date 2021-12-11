@@ -29,4 +29,5 @@ public class MyBatisSessionHolder {
     public static SqlSessionFactory getSqlSessionFactory() {
         return SQL_SESSION_FACTORY;
     }
+
 }

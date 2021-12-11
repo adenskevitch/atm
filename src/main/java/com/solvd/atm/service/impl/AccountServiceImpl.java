@@ -31,5 +31,4 @@ public class AccountServiceImpl implements AccountService {
         accountRepository.unblockAccount(account);
     }
 
-
 }

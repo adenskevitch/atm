@@ -45,12 +45,12 @@ public class Account {
         this.id = id;
     }
 
-    public String getAccountNumber() {
+    public String getNumber() {
         return number;
     }
 
-    public void setAccountNumber(String accountNumber) {
-        this.number = accountNumber;
+    public void setNumber(String number) {
+        this.number = number;
     }
 
     public Integer getMoney() {
@@ -69,12 +69,12 @@ public class Account {
         this.cards = cards;
     }
 
-    public Boolean getLock_status() {
+    public Boolean getLockStatus() {
         return lockStatus;
     }
 
-    public void setLock_status(Boolean lock_status) {
-        this.lockStatus = lock_status;
+    public void setLockStatus(Boolean lockStatus) {
+        this.lockStatus = lockStatus;
     }
 
 }

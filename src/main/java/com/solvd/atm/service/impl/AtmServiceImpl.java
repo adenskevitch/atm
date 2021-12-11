@@ -34,7 +34,7 @@ public class AtmServiceImpl implements AtmService {
             LOGGER.info("Please, enter card...");
             card = new Card();
             in = new Scanner(System.in);
-            card.setCardNumber(in.nextLine());
+            card.setNumber(in.nextLine());
             /*
             checking for a card on the server
              */
@@ -47,8 +47,8 @@ public class AtmServiceImpl implements AtmService {
                 /*
                   Check PIN realisation...
                  */
-                card.setCardPin(in.next());
-                while (Account.getInstance().getAccountNumber() != null) {
+                card.setPin(in.next());
+                while (Account.getInstance().getNumber() != null) {
                     LOGGER.info("Select operation:\n1 - Cash withdrawal.\n2 - Return card.");
                     int selectNumber = in.nextInt();
                     switch (selectNumber) {
@@ -97,7 +97,8 @@ public class AtmServiceImpl implements AtmService {
 
     @Override
     public void finishWork(Account account) {
-        account.setLock_status(false);
+        account.setLockStatus(false);
         accountService.unlockAccount(account);
     }
+
 }

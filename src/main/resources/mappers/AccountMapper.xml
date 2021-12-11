@@ -1,56 +1,58 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
-        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.solvd.atm.persistence.AccountRepository">
+	
+	<update id="blockAccount">
+		<include refid="setLock"/>
+	</update>
+	
+	<sql id="setLock">
+		update Accounts a join Cards c
+		on c.account_id = a.id
+		set a.lock_status = true
+		where c.number = #{number}
+	</sql>
+	
+	<select id="getAccountInfo" resultMap="AccountInfoResultMap">
+		Select
+		a.number as account_number, a.money as account_money, c.number as card_number, c.pin as card_pin, a.lock_status
+		as lock_status
+		From
+		Accounts a left join Cards c
+		on a.id = c.account_id
+		Where
+		c.number = #{number}
+	</select>
+	
+	<update id="decrementAccountMoney">
+		<include refid="setMoney"/>
+	</update>
+	
+	<sql id="setMoney">
+		update Accounts a
+		set money = #{money}
+		where a.number = #{account.number}
+	</sql>
+	
+	<update id="unblockAccount">
+		<include refid="setUnlock"/>
+	</update>
+	
+	<sql id="setUnlock">
+		update Accounts
+		set lock_status = false
+		where number = #{number}
+	</sql>
+	
+	<resultMap id="AccountInfoResultMap" type="Account" autoMapping="false">
+		<id property="id" column="account_id"/>
+		<result property="number" column="account_number"/>
+		<result property="money" column="account_money"/>
+		<result property="lockStatus" column="lock_status"/>
+		<collection property="cards"
+		            resultMap="com.solvd.atm.persistence.CardRepository.CardResultMap"/>
+	</resultMap>
 
-    <update id="blockAccount">
-        <include refid="setLock"/>
-    </update>
-
-    <sql id="setLock">
-        update Accounts a join Cards c
-        on c.account_id = a.id
-        set a.lock_status = true
-        where c.number = #{number}
-    </sql>
-
-    <select id="getAccountInfo" resultMap="AccountInfoResultMap">
-        Select
-        a.number as account_number, a.money as account_money, c.number as card_number, c.pin as card_pin, a.lock_status as lock_status
-        From
-        Accounts a left join Cards c
-        on a.id = c.account_id
-        Where
-        c.number = #{number}
-    </select>
-
-    <update id="decrementAccountMoney">
-        <include refid="setMoney"/>
-    </update>
-
-    <sql id="setMoney">
-    update Accounts a
-    set money = #{money}
-    where a.number = #{account.number}
-    </sql>
-
-    <update id="unblockAccount">
-        <include refid="setUnlock"/>
-    </update>
-
-    <sql id="setUnlock">
-        update Accounts
-        set lock_status = false
-        where number = #{number}
-    </sql>
-
-    <resultMap id="AccountInfoResultMap" type="Account" autoMapping="false">
-        <id property="id" column="account_id"/>
-	    <result property="number" column="account_number"/>
-	    <result property="money" column="account_money"/>
-	    <result property="lockStatus" column="lock_status"/>
-        <collection property="cards"
-                    resultMap="com.solvd.atm.persistence.CardRepository.CardResultMap"/>
-    </resultMap>
 </mapper>
