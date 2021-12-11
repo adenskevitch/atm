@@ -12,4 +12,6 @@ public interface AccountService {
 
     void unlockAccount(Account account);
 
+    void lockAccount(Account account);
+
 }

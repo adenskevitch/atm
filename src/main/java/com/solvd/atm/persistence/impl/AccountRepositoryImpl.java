@@ -9,16 +9,16 @@ import org.apache.ibatis.session.SqlSession;
 public class AccountRepositoryImpl implements AccountRepository {
 
     @Override
-    public void blockAccount(Card card) {
+    public void blockAccount(Account account) {
         try (SqlSession session = MyBatisSessionHolder.getSqlSessionFactory().openSession(true)) {
-            session.getMapper(AccountRepository.class).blockAccount(card);
+            session.getMapper(AccountRepository.class).blockAccount(account);
         }
     }
 
     @Override
-    public Account getAccountInfo(Card cardNumber) {
+    public Account getAccountInfo(Card card) {
         try (SqlSession session = MyBatisSessionHolder.getSqlSessionFactory().openSession(true)) {
-            return session.getMapper(AccountRepository.class).getAccountInfo(cardNumber);
+            return session.getMapper(AccountRepository.class).getAccountInfo(card);
         }
     }
 

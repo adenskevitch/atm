@@ -7,7 +7,7 @@ import org.apache.ibatis.annotations.Param;
 public interface AccountRepository {
 
     //    set account lock
-    void blockAccount(Card card);
+    void blockAccount(Account account);
 
     Account getAccountInfo(Card card);
 

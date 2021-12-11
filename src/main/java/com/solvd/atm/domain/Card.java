@@ -4,14 +4,16 @@ public class Card {
 
     private Long id;
     private String number;
+    private Boolean blocked;
     private String pin;
 
     @Override
     public String toString() {
         return "Card{" +
-                "cardId=" + id +
-                ", cardNumber='" + number + '\'' +
-                ", cardPin='" + pin + '\'' +
+                "id=" + id +
+                ", number='" + number + '\'' +
+                ", blocked=" + blocked +
+                ", pin='" + pin + '\'' +
                 '}';
     }
 
@@ -29,6 +31,14 @@ public class Card {
 
     public void setNumber(String number) {
         this.number = number;
+    }
+
+    public Boolean getBlocked() {
+        return blocked;
+    }
+
+    public void setBlocked(Boolean blocked) {
+        this.blocked = blocked;
     }
 
     public String getPin() {
