@@ -1,7 +1,10 @@
 package com.solvd.atm.service.impl;
 
 import com.solvd.atm.domain.Account;
+import com.solvd.atm.domain.Atm;
 import com.solvd.atm.domain.Card;
+import com.solvd.atm.persistence.AtmRepository;
+import com.solvd.atm.persistence.impl.AtmRepositoryImpl;
 import com.solvd.atm.service.AccountService;
 import com.solvd.atm.service.AtmService;
 import org.apache.logging.log4j.LogManager;
@@ -13,16 +16,23 @@ public class AtmServiceImpl implements AtmService {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+    private final AtmRepository atmRepository;
     private final AccountService accountService;
 
     public AtmServiceImpl() {
+        this.atmRepository = new AtmRepositoryImpl();
         this.accountService = new AccountServiceImpl();
     }
 
+    @Override
+    public Atm getAtmInfo(String uniqueNumber) {
+        return atmRepository.getAtmInfo(uniqueNumber);
+    }
+
     /*
-    This method is basic for ATM application.
-    It provide human interaction and include local methods for different operations and card validation.
-     */
+        This method is basic for ATM application.
+        It provide human interaction and include local methods for different operations and card validation.
+         */
     @Override
     public void inputCard() {
         Card card;

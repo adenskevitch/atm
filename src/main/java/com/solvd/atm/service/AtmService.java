@@ -1,10 +1,11 @@
 package com.solvd.atm.service;
 
 import com.solvd.atm.domain.Account;
+import com.solvd.atm.domain.Atm;
 
 public interface AtmService {
 
-//    Atm getAtmInfo(Atm atm);
+    Atm getAtmInfo (String uniqueNumber);
 
     /**
      * card object from main

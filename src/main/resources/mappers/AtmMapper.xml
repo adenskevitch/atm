@@ -2,16 +2,23 @@
 <!DOCTYPE mapper
 		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.solvd.atm.persistence.AccountRepository">
+<mapper namespace="com.solvd.atm.persistence.AtmRepository">
 	
 	<update id="decrementAtmCash">
-		<include refid="setCash"/>
-	</update>
-	
-	<sql id="setCash">
 		update Atm a
 		set cash = cash - #{money}
 		where a.number = #{account.number}
-	</sql>
+	</update>
+	
+	<select id="getAtmInfo" resultMap="getAtmInfoResultMap">
+		select * from ATMs
+		where number = #{uniqueNumber}
+	</select>
+	
+	<resultMap id="getAtmInfoResultMap" type="Atm" autoMapping="false">
+		<id property="id" column="id"/>
+		<result property="uniqueNumber" column="number"/>
+		<result property="cash" column="cash"/>
+	</resultMap>
 
 </mapper>
