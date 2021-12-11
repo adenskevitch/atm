@@ -4,20 +4,36 @@ import java.util.List;
 
 public class Account {
 
+    private static Account instance;
+
     private Long id;
     private String number;
     private Integer money;
     private List<Card> cards;
     private Boolean lockStatus;
 
+    private Account() {
+    }
+
+    public static Account getInstance() {
+        if (instance == null) {
+            instance = new Account();
+        }
+        return instance;
+    }
+
+    public static void setInstance(Account account) {
+        instance = account;
+    }
+
     @Override
     public String toString() {
         return "Account{" +
                 "id=" + id +
-                ", accountNumber='" + number + '\'' +
+                ", number='" + number + '\'' +
                 ", money=" + money +
                 ", cards=" + cards +
-                ", lock_status=" + lockStatus +
+                ", lockStatus=" + lockStatus +
                 '}';
     }
 
