@@ -15,28 +15,28 @@ public class Card {
                 '}';
     }
 
-    public Long getCardId() {
+    public Long getId() {
         return id;
     }
 
-    public void setCardId(Long cardId) {
-        this.id = cardId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public String getCardNumber() {
+    public String getNumber() {
         return number;
     }
 
-    public void setCardNumber(String cardNumber) {
-        this.number = cardNumber;
+    public void setNumber(String number) {
+        this.number = number;
     }
 
-    public String getCardPin() {
+    public String getPin() {
         return pin;
     }
 
-    public void setCardPin(String cardPin) {
-        this.pin = cardPin;
+    public void setPin(String pin) {
+        this.pin = pin;
     }
 
 }

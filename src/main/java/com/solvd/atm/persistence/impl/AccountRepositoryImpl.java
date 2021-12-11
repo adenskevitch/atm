@@ -35,4 +35,5 @@ public class AccountRepositoryImpl implements AccountRepository {
             session.getMapper(AccountRepository.class).unblockAccount(account);
         }
     }
+
 }

@@ -6,8 +6,6 @@ import com.sun.org.apache.bcel.internal.generic.ACONST_NULL;
 
 public interface AccountService {
 
-
-
     Account getAccountInfo(Card cardNumber);
 
     void decrementMoney(Account account, Integer money);

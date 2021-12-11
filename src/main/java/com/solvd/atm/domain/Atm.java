@@ -4,6 +4,16 @@ public class Atm {
 
     private Long id;
     private Integer cash;
+    private String uniqueNumber;
+
+    @Override
+    public String toString() {
+        return "Atm{" +
+                "id=" + id +
+                ", cash=" + cash +
+                ", uniqueNumber='" + uniqueNumber + '\'' +
+                '}';
+    }
 
     public Long getId() {
         return id;
@@ -19,6 +29,14 @@ public class Atm {
 
     public void setCash(Integer cash) {
         this.cash = cash;
+    }
+
+    public String getUniqueNumber() {
+        return uniqueNumber;
+    }
+
+    public void setUniqueNumber(String uniqueNumber) {
+        this.uniqueNumber = uniqueNumber;
     }
 
 }

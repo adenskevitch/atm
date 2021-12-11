@@ -1,10 +1,11 @@
 package com.solvd.atm.service;
 
 import com.solvd.atm.domain.Account;
+import com.solvd.atm.domain.Atm;
 
 public interface AtmService {
 
-//    Atm getAtmInfo(Atm atm);
+    Atm getAtmInfo (String uniqueNumber);
 
     /**
      * card object from main
@@ -19,7 +20,8 @@ public interface AtmService {
      * quantity of many
      */
     void getMoney(Account account, Integer money);
-//
+
+    //
 //    /**
 //     * finish work with current account
 //     * aet accountLock to false
@@ -27,4 +29,5 @@ public interface AtmService {
 //     * current card set null
 //     */
     void finishWork(Account account);
+
 }
