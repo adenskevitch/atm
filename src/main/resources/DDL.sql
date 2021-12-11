@@ -43,6 +43,7 @@ create table if not exists Cards (
 id serial,
 number varchar(16) not null unique,
 pin varchar(4) not null,
+blocked boolean not null default false,
 account_id bigint unsigned not null,
 primary key (id),
 constraint fk_Cards_Account foreign key (account_id) references Accounts (id)

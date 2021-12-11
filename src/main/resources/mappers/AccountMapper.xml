@@ -9,16 +9,15 @@
 	</update>
 	
 	<sql id="setLock">
-		update Accounts a join Cards c
-		on c.account_id = a.id
-		set a.lock_status = true
-		where c.number = #{number}
+		update Accounts
+		set lock_status = true
+		where number = #{number}
 	</sql>
 	
 	<select id="getAccountInfo" resultMap="AccountInfoResultMap">
 		Select
-		a.number as account_number, a.money as account_money, c.number as card_number, c.pin as card_pin, a.lock_status
-		as lock_status
+		a.number as account_number, a.money as account_money, c.number as card_number, c.pin as card_pin,
+		c.blocked as card_blocked, a.lock_status as lock_status
 		From
 		Accounts a left join Cards c
 		on a.id = c.account_id

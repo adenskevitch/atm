@@ -7,6 +7,7 @@ import com.solvd.atm.persistence.AtmRepository;
 import com.solvd.atm.persistence.impl.AtmRepositoryImpl;
 import com.solvd.atm.service.AccountService;
 import com.solvd.atm.service.AtmService;
+import com.solvd.atm.service.CardService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -18,10 +19,12 @@ public class AtmServiceImpl implements AtmService {
 
     private final AtmRepository atmRepository;
     private final AccountService accountService;
+    private final CardService cardService;
 
     public AtmServiceImpl() {
         this.atmRepository = new AtmRepositoryImpl();
         this.accountService = new AccountServiceImpl();
+        this.cardService = new CardServiceImpl();
     }
 
     @Override
@@ -53,12 +56,12 @@ public class AtmServiceImpl implements AtmService {
             } else {
                 Account.setInstance(accountService.getAccountInfo(card));
                 System.out.println(Account.getInstance());
-                LOGGER.info("Enter pin...");
                 /*
                   Check PIN realisation...
                  */
-                card.setPin(in.next());
-                while (Account.getInstance().getNumber() != null) {
+                cardService.checkPin(card);
+                card = cardService.getByNumber(card.getNumber());
+                while (Account.getInstance().getNumber() != null && !card.getBlocked()) {
                     LOGGER.info("Select operation:\n1 - Cash withdrawal.\n2 - Return card.");
                     int selectNumber = in.nextInt();
                     switch (selectNumber) {
@@ -107,8 +110,9 @@ public class AtmServiceImpl implements AtmService {
 
     @Override
     public void finishWork(Account account) {
-        account.setLockStatus(false);
-        accountService.unlockAccount(account);
+        if(account.getLockStatus() == null) {
+            accountService.unlockAccount(account);
+        }
     }
 
 }
