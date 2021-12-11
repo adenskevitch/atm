@@ -23,33 +23,33 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
-    public Card getByNumber(String cardNumber){
+    public Card getByNumber(String cardNumber) {
         return cardRepository.findByNumber(cardNumber);
     }
 
-    private void blockCard(Card card){
+    private void blockCard(Card card) {
         card.setBlocked(true);
         cardRepository.blockCard(card);
     }
 
     @Override
-    public void checkPin(Card card){
+    public void checkPin(Card card) {
         Scanner in = new Scanner(System.in);
-            for(int i = 1;i <= 3;i++){
-                LOGGER.info("Enter pin...");
-                card.setPin(in.nextLine());
-                if(comparePin(card)){
-                    break;
-                } else{
-                    if(i<3) {
-                        LOGGER.info("You entered wrong pin!");
-                        LOGGER.info("Quantity of left attempts:  " + (3 - i));
-                    }else{
-                        LOGGER.info("Your card is blocked");
-                        blockCard(card);
-                    }
+        for (int i = 1; i <= 3; i++) {
+            LOGGER.info("Enter pin...");
+            card.setPin(in.nextLine());
+            if (comparePin(card)) {
+                break;
+            } else {
+                if (i < 3) {
+                    LOGGER.info("You entered wrong pin!");
+                    LOGGER.info("Quantity of left attempts:  " + (3 - i));
+                } else {
+                    LOGGER.info("Your card is blocked");
+                    blockCard(card);
                 }
             }
+        }
     }
 
 }

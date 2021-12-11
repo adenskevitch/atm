@@ -4,7 +4,7 @@ import com.solvd.atm.domain.Card;
 
 public interface CardService {
 
-    void checkPin (Card card);
+    void checkPin(Card card);
 
     Card getByNumber(String cardNumber);
 

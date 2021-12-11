@@ -16,14 +16,14 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public void lockAccount(Account account){
+    public void lockAccount(Account account) {
         account.setLockStatus(true);
         accountRepository.blockAccount(account);
     }
 
     @Override
     public Account getAccountInfo(Card card) {
-        Account account =  accountRepository.getAccountInfo(card);
+        Account account = accountRepository.getAccountInfo(card);
         lockAccount(account);
         return account;
     }

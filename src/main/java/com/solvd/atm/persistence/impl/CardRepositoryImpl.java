@@ -10,14 +10,13 @@ public class CardRepositoryImpl implements CardRepository {
     @Override
     public Card findByNumber(String cardNumber) {
         try (SqlSession session = MyBatisSessionHolder.getSqlSessionFactory().openSession(true)) {
-            Card card = session.getMapper(CardRepository.class).findByNumber(cardNumber);
-            return card;
+            return session.getMapper(CardRepository.class).findByNumber(cardNumber);
         }
     }
 
     @Override
-    public void blockCard(Card card){
-        try(SqlSession session = MyBatisSessionHolder.getSqlSessionFactory().openSession(true)) {
+    public void blockCard(Card card) {
+        try (SqlSession session = MyBatisSessionHolder.getSqlSessionFactory().openSession(true)) {
             session.getMapper(CardRepository.class).blockCard(card);
         }
     }

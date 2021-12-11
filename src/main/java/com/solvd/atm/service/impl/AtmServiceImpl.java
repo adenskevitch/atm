@@ -110,7 +110,7 @@ public class AtmServiceImpl implements AtmService {
 
     @Override
     public void finishWork(Account account) {
-        if(account.getLockStatus() == null) {
+        if (account.getLockStatus() == null) {
             accountService.unlockAccount(account);
         }
     }

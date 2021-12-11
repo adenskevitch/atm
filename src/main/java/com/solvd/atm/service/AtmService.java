@@ -5,7 +5,7 @@ import com.solvd.atm.domain.Atm;
 
 public interface AtmService {
 
-    Atm getAtmInfo (String uniqueNumber);
+    Atm getAtmInfo(String uniqueNumber);
 
     /**
      * card object from main
