@@ -1,7 +1,6 @@
 package com.solvd.atm.service;
 
 import com.solvd.atm.domain.Account;
-import com.solvd.atm.domain.Card;
 
 public interface AtmService {
 
@@ -13,7 +12,7 @@ public interface AtmService {
      * create account object
      */
 
-    Account inputCard(Card userCard);
+    void inputCard();
 
     /**
      * operation select

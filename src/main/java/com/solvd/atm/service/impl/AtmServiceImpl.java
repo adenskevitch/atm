@@ -4,32 +4,91 @@ import com.solvd.atm.domain.Account;
 import com.solvd.atm.domain.Card;
 import com.solvd.atm.service.AccountService;
 import com.solvd.atm.service.AtmService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.util.Scanner;
 
 public class AtmServiceImpl implements AtmService {
-    //
-//    private final AtmRepository atmRepositopy;
-//    private final CardService cardService;
+
+    private static final Logger LOGGER = LogManager.getLogger();
+
     private final AccountService accountService;
 
-    //
     public AtmServiceImpl() {
-//        this.atmRepository = new AtmRepositoryImpl();
-//        this.cardService = new CardServiceImpl();
         this.accountService = new AccountServiceImpl();
     }
 
-//    @Override
-//    public Atm getAtmInfo(Atm atm) {
-//        return null;
-//    }
-
-    //
+    /*
+    This method is basic for ATM application.
+    It provide human interaction and include local methods for different operations and card validation.
+     */
     @Override
-    public Account inputCard(Card userCard) {
-        return accountService.getAccountInfo(userCard);
+    public void inputCard() {
+        Card card;
+        Scanner in;
+        /*
+        waiting for card input
+         */
+        while (true) {
+            LOGGER.info("Please, enter card...");
+            card = new Card();
+            in = new Scanner(System.in);
+            card.setCardNumber(in.nextLine());
+            /*
+            checking for a card on the server
+             */
+            if (accountService.getAccountInfo(card) == null) {
+                LOGGER.info("Card reading error");
+            } else {
+                Account.setInstance(accountService.getAccountInfo(card));
+                System.out.println(Account.getInstance());
+                LOGGER.info("Enter pin...");
+                /*
+                  Check PIN realisation...
+                 */
+                card.setCardPin(in.next());
+                while (Account.getInstance().getAccountNumber() != null) {
+                    LOGGER.info("Select operation:\n1 - Cash withdrawal.\n2 - Return card.");
+                    int selectNumber = in.nextInt();
+                    switch (selectNumber) {
+                        case 1: {
+                            LOGGER.info("Enter the amount...");
+                            Integer money = in.nextInt();
+                            /*
+                              Place for account money check
+                             */
+                            getMoney(Account.getInstance(), money);
+                            LOGGER.info("Take the money...\nDo you want to continue?\n1 - Yes.\n2 - No.");
+                            selectNumber = in.nextInt();
+                            switch (selectNumber) {
+                                case 1:
+                                    break;
+                                case 2: {
+                                    LOGGER.info("Take the card...");
+                                    finishWork(Account.getInstance());
+                                    Account.setInstance(null);
+                                }
+                                break;
+                                default:
+                                    LOGGER.info("Input Error!");
+                            }
+                        }
+                        break;
+                        case 2: {
+                            LOGGER.info("Take the card...");
+                            finishWork(Account.getInstance());
+                            Account.setInstance(null);
+                        }
+                        break;
+                        default:
+                            LOGGER.info("Input Error!");
+                    }
+                }
+            }
+        }
     }
 
-    //
     @Override
     public void getMoney(Account account, Integer money) {
         account.setMoney(account.getMoney() - money);
