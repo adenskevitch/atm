@@ -28,6 +28,17 @@ constraint fk_Addresses_ATM foreign key(address_id) references Addresses (id)
 on update no action on delete cascade
 );
 
+create table if not exists Banknotes (
+id serial,
+denomination int unique not null,
+number int unsigned,
+currency_unit varchar(30) not null,
+atm_id bigint unsigned not null,
+primary key (id),
+constraint fk_ATM_Banknotes foreign key(atm_id) references ATMs (id)
+on update cascade on delete cascade
+);
+
 create table if not exists Accounts (
 id serial,
 money decimal(20,2),
