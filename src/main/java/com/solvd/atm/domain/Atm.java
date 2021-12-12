@@ -1,17 +1,25 @@
 package com.solvd.atm.domain;
 
+import java.util.Map;
+
 public class Atm {
 
     private Long id;
-    private Integer cash;
     private String uniqueNumber;
+    private Integer cash;
+    private Map<Integer, Integer> blrRubBanknotes;
+
+    public void putBanknote(Integer denomination, Integer number) {
+        this.blrRubBanknotes.put(denomination, number);
+    }
 
     @Override
     public String toString() {
         return "Atm{" +
                 "id=" + id +
-                ", cash=" + cash +
                 ", uniqueNumber='" + uniqueNumber + '\'' +
+                ", cash=" + cash +
+                ", blrRubBanknotes=" + blrRubBanknotes +
                 '}';
     }
 
@@ -23,14 +31,6 @@ public class Atm {
         this.id = id;
     }
 
-    public Integer getCash() {
-        return cash;
-    }
-
-    public void setCash(Integer cash) {
-        this.cash = cash;
-    }
-
     public String getUniqueNumber() {
         return uniqueNumber;
     }
@@ -39,4 +39,19 @@ public class Atm {
         this.uniqueNumber = uniqueNumber;
     }
 
+    public Integer getCash() {
+        return cash;
+    }
+
+    public void setCash(Integer cash) {
+        this.cash = cash;
+    }
+
+    public Map<Integer, Integer> getBlrRubBanknotes() {
+        return blrRubBanknotes;
+    }
+
+    public void setBlrRubBanknotes(Map<Integer, Integer> blrRubBanknotes) {
+        this.blrRubBanknotes = blrRubBanknotes;
+    }
 }

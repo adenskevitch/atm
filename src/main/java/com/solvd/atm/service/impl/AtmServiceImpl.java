@@ -7,10 +7,12 @@ import com.solvd.atm.persistence.AtmRepository;
 import com.solvd.atm.persistence.impl.AtmRepositoryImpl;
 import com.solvd.atm.service.AccountService;
 import com.solvd.atm.service.AtmService;
+import com.solvd.atm.service.BanknoteService;
 import com.solvd.atm.service.CardService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.HashMap;
 import java.util.Scanner;
 
 public class AtmServiceImpl implements AtmService {
@@ -20,16 +22,25 @@ public class AtmServiceImpl implements AtmService {
     private final AtmRepository atmRepository;
     private final AccountService accountService;
     private final CardService cardService;
+    private final BanknoteService banknoteService;
 
     public AtmServiceImpl() {
         this.atmRepository = new AtmRepositoryImpl();
         this.accountService = new AccountServiceImpl();
         this.cardService = new CardServiceImpl();
+        this.banknoteService = new BanknoteServiceImpl();
     }
 
     @Override
     public Atm getAtmInfo(String uniqueNumber) {
-        return atmRepository.getAtmInfo(uniqueNumber);
+        Atm atm = atmRepository.getAtmInfo(uniqueNumber);
+        atm.setBlrRubBanknotes(new HashMap<>());
+        atm.setCash(0);
+        banknoteService.getBanknoteInfo(uniqueNumber).forEach(banknote -> {
+            atm.putBanknote(banknote.getBanknoteDenomination(), banknote.getBanknotesNumber());
+            atm.setCash(atm.getCash() + banknote.getBanknoteDenomination() * banknote.getBanknotesNumber());
+        });
+        return atm;
     }
 
     /*
@@ -114,5 +125,4 @@ public class AtmServiceImpl implements AtmService {
             accountService.unlockAccount(account);
         }
     }
-
 }

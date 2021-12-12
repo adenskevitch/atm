@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.solvd.atm.persistence.BanknoteRepository">
+
+    <select id="getBanknoteInfo" resultMap="BanknoteResultMap">
+        select
+        b.denomination as banknote_denomination, b.number as banknote_number
+        from
+        ATMs a left join Banknotes b
+        on a.id = b.atm_id
+        where
+        a.number = #{uniqueNumber} and b.currency_unit = "Belarusian ruble"
+    </select>
+
+    <resultMap id="BanknoteResultMap" type="Banknote" autoMapping="false">
+        <result property="banknoteDenomination" column="banknote_denomination"/>
+        <result property="banknotesNumber" column="banknote_number"/>
+    </resultMap>
+
+    <!--    <resultMap id="BanknoteResultMap" type="java.util.Map" autoMapping="false">-->
+    <!--        <result property="key" column="banknote_denomination"/>-->
+    <!--        <result property="value" column="banknote_number"/>-->
+    <!--    </resultMap>-->
+
+</mapper>

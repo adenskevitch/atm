@@ -33,5 +33,4 @@ public class Main {
         atmService.inputCard();
         System.out.println(Account.getInstance());
     }
-
 }
