@@ -6,6 +6,7 @@ import com.solvd.atm.service.AccountService;
 import com.solvd.atm.service.AtmService;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class AtmServiceImpl implements AtmService {
     //
@@ -47,36 +48,63 @@ public class AtmServiceImpl implements AtmService {
     @Override
     public List<List<?>> moneyVariants(Map<Integer, Integer> cashInAtm, Integer requiredCash) {
 
+        // list with lists of variants for user to select
         List<List<?>> listOfVariants = new ArrayList<>();
 
+        // filling sumMap map with values
+        // key -> banknote, value -> requiredCash / k (possible banknotes to give)
         Map<Integer, Integer> sumMap = new LinkedHashMap<>();
-        cashInAtm.forEach((k, v) -> sumMap.put(k, requiredCash / k));
+
+        cashInAtm.forEach((k, v) ->
+        {
+            if ((requiredCash / k) > v) {
+                sumMap.put(k, v);
+            } else {
+                sumMap.put(k, requiredCash / k);
+            }
+        });
+
         System.out.println(sumMap);
 
 
+        // number of variants for user to select
         for (int n = 0; n < 6; n++) {
 
+            // variable to reset value of virtual required cash
             Integer virtualCash = requiredCash;
+            // current variant of banknote set
             List<Integer> variant = new LinkedList<>();
-
 
             for (Map.Entry<Integer, Integer> entry : sumMap.entrySet()) {
 
                 Integer banknote = virtualCash / entry.getKey();
 
+                // loop for add banknotes with same value
                 for (int i = 0; i < banknote & i < entry.getValue(); i++) {
                     variant.add(entry.getKey());
                     virtualCash = virtualCash - entry.getKey();
                 }
-                entry.setValue(entry.getValue() - 1);
             }
+
+            // NOT add variant if it exists
             if (!listOfVariants.contains(variant)) {
-                listOfVariants.add(variant);
+                if (Objects.equals(variant.stream().reduce(0, Integer::sum), requiredCash)) {
+                    listOfVariants.add(variant);
+                }
             }
+
+            for (Map.Entry<Integer, Integer> entry : sumMap.entrySet()) {
+                if (entry.getValue() > 0) {
+                    entry.setValue(entry.getValue() - 1);
+                    break;
+                }
+            }
+
 
         }
-        listOfVariants.forEach(System.out::println);
 
-        return null;
+//        listOfVariants.forEach(nestedList -> nestedList.forEach(nominal -> ));
+
+        return listOfVariants;
     }
 }

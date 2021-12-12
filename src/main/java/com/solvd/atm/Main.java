@@ -42,7 +42,8 @@ public class Main {
 //        atmService.finishWork(account);
 //        System.out.println(account);
 
-
+        // map of cash in atm cell
+        // with key -> banknote, value -> quantity
         Map<Integer, Integer> cashMap = new LinkedHashMap<>();
         cashMap.put(200, 5);
         cashMap.put(100, 5);
@@ -50,7 +51,7 @@ public class Main {
         cashMap.put(20, 5);
         cashMap.put(10, 5);
         cashMap.put(5, 5);
-        System.out.println(atmService.moneyVariants(cashMap, 15));
+        atmService.moneyVariants(cashMap, 115).forEach(System.out::println);
 
     }
 }
