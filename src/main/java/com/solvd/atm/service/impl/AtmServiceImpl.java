@@ -16,7 +16,6 @@ import java.util.HashMap;
 import java.util.Scanner;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class AtmServiceImpl implements AtmService {
 
@@ -118,6 +117,9 @@ public class AtmServiceImpl implements AtmService {
 
     @Override
     public void getMoney(Account account, Integer money) {
+        List<List<?>> banknotesVariants = moneyVariants(Atm.getInstance().getBlrRubBanknotes(), money);
+        LOGGER.info("Select banknotes...\n");
+        LOGGER.info(banknotesVariants);
         account.setMoney(account.getMoney() - money);
         accountService.decrementMoney(account, account.getMoney());
     }

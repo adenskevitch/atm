@@ -4,10 +4,26 @@ import java.util.Map;
 
 public class Atm {
 
+    private static Atm instance;
+
     private Long id;
     private String uniqueNumber;
     private Integer cash;
     private Map<Integer, Integer> blrRubBanknotes;
+
+    private Atm() {
+    }
+
+    public static Atm getInstance() {
+        if (instance == null) {
+            instance = new Atm();
+        }
+        return instance;
+    }
+
+    public static void setInstance(Atm atm) {
+        instance = atm;
+    }
 
     public void putBanknote(Integer denomination, Integer number) {
         this.blrRubBanknotes.put(denomination, number);
