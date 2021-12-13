@@ -1,11 +1,14 @@
 package com.solvd.atm.service;
 
 import com.solvd.atm.domain.Account;
-import com.solvd.atm.domain.Atm;
+import com.solvd.atm.domain.Card;
+
+import java.util.List;
+import java.util.Map;
 
 public interface AtmService {
 
-    Atm getAtmInfo(String uniqueNumber);
+//    Atm getAtmInfo(Atm atm);
 
     /**
      * card object from main
@@ -13,15 +16,14 @@ public interface AtmService {
      * create account object
      */
 
-    void inputCard();
+    Account inputCard(Card userCard);
 
     /**
      * operation select
      * quantity of many
      */
     void getMoney(Account account, Integer money);
-
-    //
+//
 //    /**
 //     * finish work with current account
 //     * aet accountLock to false
@@ -29,5 +31,7 @@ public interface AtmService {
 //     * current card set null
 //     */
     void finishWork(Account account);
+
+    public List<List<?>> moneyVariants(Map<Integer, Integer> cashInAtm, Integer requiredCash);
 
 }
