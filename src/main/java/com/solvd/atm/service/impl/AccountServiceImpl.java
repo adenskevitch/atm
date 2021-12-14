@@ -6,6 +6,8 @@ import com.solvd.atm.persistence.AccountRepository;
 import com.solvd.atm.persistence.impl.AccountRepositoryImpl;
 import com.solvd.atm.service.AccountService;
 
+import java.math.BigDecimal;
+
 public class AccountServiceImpl implements AccountService {
 
     private final AccountRepository accountRepository;
@@ -30,7 +32,12 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public void decrementMoney(Account account, Integer money) {
-        accountRepository.decrementAccountMoney(account, money);
+        accountRepository.changeAccountMoney(account, account.getMoney() - money);
+    }
+
+    @Override
+    public void incrementMoney(Account account, Integer money){
+        accountRepository.changeAccountMoney(account,account.getMoney() + money);
     }
 
     @Override

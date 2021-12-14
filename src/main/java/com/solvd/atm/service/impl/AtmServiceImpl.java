@@ -12,6 +12,7 @@ import com.solvd.atm.service.CardService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Scanner;
 
@@ -75,7 +76,7 @@ public class AtmServiceImpl implements AtmService {
                 cardService.checkPin(card);
                 card = cardService.getByNumber(card.getNumber());
                 while (Account.getInstance().getNumber() != null && !card.getBlocked()) {
-                    LOGGER.info("Select operation:\n1 - Cash withdrawal.\n2 - Return card.");
+                    LOGGER.info("Select operation:\n1 - Cash withdrawal.\n2 - Money transfer.\n3 - Return card.");
                     int selectNumber = in.nextInt();
                     switch (selectNumber) {
                         case 1: {
@@ -85,23 +86,24 @@ public class AtmServiceImpl implements AtmService {
                               Place for account money check
                              */
                             getMoney(Account.getInstance(), money);
-                            LOGGER.info("Take the money...\nDo you want to continue?\n1 - Yes.\n2 - No.");
-                            selectNumber = in.nextInt();
-                            switch (selectNumber) {
-                                case 1:
-                                    break;
-                                case 2: {
-                                    LOGGER.info("Take the card...");
-                                    finishWork(Account.getInstance());
-                                    Account.setInstance(null);
-                                }
-                                break;
-                                default:
-                                    LOGGER.info("Input Error!");
-                            }
+                            LOGGER.info("Take the money...");
+                            LOGGER.info("Do you want to continue?\n1 - Yes.\n2 - No.");
+                            continueWork();
                         }
                         break;
-                        case 2: {
+                        case 2:{
+                            LOGGER.info("Enter number of destination card...");
+                            in = new Scanner(System.in);
+                            String cardNumber = in.nextLine();
+                            //check of card input (exception)
+                            LOGGER.info("Enter the amount...");
+                            in = new Scanner(System.in);
+                            Integer money = in.nextInt();
+                            transferMoney(Account.getInstance(),cardNumber,money);
+                            continueWork();
+                            break;
+                        }
+                        case 3: {
                             LOGGER.info("Take the card...");
                             finishWork(Account.getInstance());
                             Account.setInstance(null);
@@ -112,6 +114,25 @@ public class AtmServiceImpl implements AtmService {
                     }
                 }
             }
+        }
+    }
+
+    @Override
+    public void continueWork(){
+        Scanner in = new Scanner(System.in);
+        LOGGER.info("Do you want to continue?\n1 - Yes.\n2 - No.");
+        int selectNumber = in.nextInt();
+        switch (selectNumber) {
+            case 1:
+                break;
+            case 2: {
+                LOGGER.info("Take the card...");
+                finishWork(Account.getInstance());
+                Account.setInstance(null);
+            }
+            break;
+            default:
+                LOGGER.info("Input Error!");
         }
     }
 
@@ -129,6 +150,15 @@ public class AtmServiceImpl implements AtmService {
         if (account.getLockStatus() == null) {
             accountService.unlockAccount(account);
         }
+    }
+
+    @Override
+    public void transferMoney(Account account, String cardNumber, Integer money){
+        Account destinationAccount = accountService.getAccountInfo(cardService.getByNumber(cardNumber));
+        //check of account money on account
+        accountService.decrementMoney(account,money);
+        accountService.incrementMoney(destinationAccount,money);
+        LOGGER.info("Your transaction was successful");
     }
 
     @Override

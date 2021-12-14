@@ -23,9 +23,9 @@ public class AccountRepositoryImpl implements AccountRepository {
     }
 
     @Override
-    public void decrementAccountMoney(Account account, Integer money) {
+    public void changeAccountMoney(Account account, Integer money) {
         try (SqlSession session = MyBatisSessionHolder.getSqlSessionFactory().openSession(true)) {
-            session.getMapper(AccountRepository.class).decrementAccountMoney(account, money);
+            session.getMapper(AccountRepository.class).changeAccountMoney(account, money);
         }
     }
 

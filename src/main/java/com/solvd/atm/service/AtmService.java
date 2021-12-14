@@ -34,4 +34,8 @@ public interface AtmService {
 
     List<List<?>> moneyVariants(Map<Integer, Integer> cashInAtm, Integer requiredCash);
 
+    void transferMoney(Account account, String cardNumber, Integer money);
+
+    void continueWork();
+
 }
