@@ -47,7 +47,7 @@ public class AtmServiceImpl implements AtmService {
 
     /*
         This method is basic for ATM application.
-        It provide human interaction and include local methods for different operations and card validation.
+        It provides human interaction and include local methods for different operations and card validation.
          */
     @Override
     public void inputCard() {

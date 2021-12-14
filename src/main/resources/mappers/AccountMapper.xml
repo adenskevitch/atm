@@ -50,7 +50,7 @@
 		<result property="number" column="account_number"/>
 		<result property="money" column="account_money"/>
 		<result property="lockStatus" column="lock_status"/>
-		<collection property="cards"
+		<association property="card"
 		            resultMap="com.solvd.atm.persistence.CardRepository.CardResultMap"/>
 	</resultMap>
 
