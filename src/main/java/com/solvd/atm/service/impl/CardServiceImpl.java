@@ -5,6 +5,7 @@ import com.solvd.atm.domain.Card;
 import com.solvd.atm.persistence.CardRepository;
 import com.solvd.atm.persistence.impl.CardRepositoryImpl;
 import com.solvd.atm.service.CardService;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -15,6 +16,10 @@ public class CardServiceImpl implements CardService {
     private static final Logger LOGGER = LogManager.getLogger(CardService.class);
 
     private final CardRepository cardRepository = new CardRepositoryImpl();
+
+    public String encryptSha256 (String stringToEncrypt) {
+        return DigestUtils.sha256Hex(stringToEncrypt);
+    }
 
     private Boolean comparePin(Card card) {
         return card.getPin().equals(Account.getInstance().getCard().getPin());
@@ -35,7 +40,11 @@ public class CardServiceImpl implements CardService {
         Scanner in = new Scanner(System.in);
         for (int i = 1; i <= 3; i++) {
             LOGGER.info("Enter pin...");
-            card.setPin(in.nextLine());
+
+            card.setPin(
+                    encryptSha256(in.nextLine())
+            );
+
             if (comparePin(card)) {
                 break;
             } else {

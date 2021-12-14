@@ -52,8 +52,8 @@ on update no action on delete cascade
 
 create table if not exists Cards (
 id serial,
-number varchar(16) not null unique,
-pin varchar(4) not null,
+number char(64) not null unique,
+pin char(64) not null,
 blocked boolean not null default false,
 account_id bigint unsigned not null,
 primary key (id),

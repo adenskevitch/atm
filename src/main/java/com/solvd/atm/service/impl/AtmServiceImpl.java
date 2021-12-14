@@ -61,7 +61,9 @@ public class AtmServiceImpl implements AtmService {
             LOGGER.info("Please, enter card...");
             card = new Card();
             in = new Scanner(System.in);
-            card.setNumber(in.nextLine());
+            card.setNumber(
+                    cardService.encryptSha256(in.nextLine())
+            );
             /*
             checking for a card on the server
              */
