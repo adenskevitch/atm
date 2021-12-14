@@ -9,6 +9,7 @@ public class Atm {
     private Long id;
     private String uniqueNumber;
     private Integer cash;
+    private Address address;
     private Map<Integer, Integer> blrRubBanknotes;
 
     private Atm() {
@@ -61,6 +62,14 @@ public class Atm {
 
     public void setCash(Integer cash) {
         this.cash = cash;
+    }
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
     }
 
     public Map<Integer, Integer> getBlrRubBanknotes() {
