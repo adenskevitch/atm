@@ -13,7 +13,6 @@ public class AccountServiceImpl implements AccountService {
     private final AccountRepository accountRepository;
 
     public AccountServiceImpl() {
-
         this.accountRepository = new AccountRepositoryImpl();
     }
 
