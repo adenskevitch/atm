@@ -46,4 +46,10 @@ public class AccountServiceImpl implements AccountService {
         accountRepository.unblockAccount(account);
     }
 
+    @Override
+    public Integer getBalance(Card card){
+        Account account = accountRepository.getAccountInfo(card);
+        return account.getMoney();
+    }
+
 }

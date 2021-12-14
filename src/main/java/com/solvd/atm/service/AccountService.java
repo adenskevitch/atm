@@ -15,4 +15,6 @@ public interface AccountService {
 
     void incrementMoney(Account account, Integer money);
 
+    Integer getBalance(Card card);
+
 }

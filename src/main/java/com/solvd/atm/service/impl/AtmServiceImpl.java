@@ -12,7 +12,6 @@ import com.solvd.atm.service.CardService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Scanner;
 
@@ -76,7 +75,7 @@ public class AtmServiceImpl implements AtmService {
                 cardService.checkPin(card);
                 card = cardService.getByNumber(card.getNumber());
                 while (Account.getInstance().getNumber() != null && !card.getBlocked()) {
-                    LOGGER.info("Select operation:\n1 - Cash withdrawal.\n2 - Money transfer.\n3 - Return card.");
+                    LOGGER.info("Select operation:\n1 - Cash withdrawal.\n2 - Money transfer. \n3 - View account balance. \n4 - Return card.");
                     int selectNumber = in.nextInt();
                     switch (selectNumber) {
                         case 1: {
@@ -103,7 +102,13 @@ public class AtmServiceImpl implements AtmService {
                             continueWork();
                             break;
                         }
-                        case 3: {
+                        case 3:{
+                           Integer money = accountService.getBalance(card);
+                           LOGGER.info("Your account balance is: " + money);
+                           continueWork();
+                            break;
+                        }
+                        case 4: {
                             LOGGER.info("Take the card...");
                             finishWork(Account.getInstance());
                             Account.setInstance(null);
