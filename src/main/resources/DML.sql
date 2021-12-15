@@ -28,12 +28,12 @@ insert into ATMs (number,cash, bank_id, address_id) values
 ('ALFA003',3426352, 1, 4);
 
 insert into Banknotes (denomination, number, currency_unit, atm_id) values
-(5,17300, 'Belarusian ruble', 1),
-(10,8625, 'Belarusian ruble', 1),
-(20,3450, 'Belarusian ruble', 1),
-(50,1035, 'Belarusian ruble', 1),
-(100,345, 'Belarusian ruble', 1),
-(200,85, 'Belarusian ruble', 1);
+(200, 85, 'Belarusian ruble', 1),
+(100, 345, 'Belarusian ruble', 1),
+(50, 1035, 'Belarusian ruble', 1),
+(20, 3450, 'Belarusian ruble', 1),
+(10, 8625, 'Belarusian ruble', 1),
+(5, 17300, 'Belarusian ruble', 1);
 
 insert into Accounts (money, number, bank_id) values
 (35375.30, 'BY01ALFA3012678905745789',1),

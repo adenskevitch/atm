@@ -9,6 +9,11 @@ public class Bank {
     private List<Atm> atms;
     private List<Account> accounts;
 
+    @Override
+    public String toString() {
+        return name;
+    }
+
     public Long getId() {
         return id;
     }
@@ -40,5 +45,4 @@ public class Bank {
     public void setAccounts(List<Account> accounts) {
         this.accounts = accounts;
     }
-
 }

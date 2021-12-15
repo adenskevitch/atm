@@ -12,14 +12,23 @@
 
     <select id="getAtmInfo" resultMap="getAtmInfoResultMap">
         select
-        id as atm_id, number as atm_number
-        from ATMs
-        where number = #{uniqueNumber}
+        at.id as atm_id, at.number as atm_number, b.name as bank_name, ad.city as address_city, ad.street as
+        address_street, ad.building as address_building
+        from
+        ATMs at left join banks b
+        on at.bank_id = b.id
+        left join Addresses ad
+        on at.address_id = ad.id
+        where
+        at.number = #{uniqueNumber}
     </select>
 
     <resultMap id="getAtmInfoResultMap" type="Atm" autoMapping="false">
         <id property="id" column="atm_id"/>
         <result property="uniqueNumber" column="atm_number"/>
+        <association property="bank"
+                     resultMap="com.solvd.atm.persistence.BankRepository.BankResultMap"/>
+        <association property="address" resultMap="com.solvd.atm.persistence.AddressRepository.AddressResultMap"/>
     </resultMap>
 
 </mapper>

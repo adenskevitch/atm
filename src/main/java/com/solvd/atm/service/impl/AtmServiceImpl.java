@@ -37,14 +37,21 @@ public class AtmServiceImpl implements AtmService {
 
     @Override
     public Atm getAtmInfo(String uniqueNumber) {
-        Atm atm = atmRepository.getAtmInfo(uniqueNumber);
-        atm.setBlrRubBanknotes(new LinkedHashMap<>());
-        atm.setCash(0);
-        banknoteService.getBanknoteInfo(uniqueNumber).forEach(banknote -> {
-            atm.putBanknote(banknote.getBanknoteDenomination(), banknote.getBanknotesNumber());
-            atm.setCash(atm.getCash() + banknote.getBanknoteDenomination() * banknote.getBanknotesNumber());
-        });
-        return atm;
+        try {
+            if (atmRepository.getAtmInfo(uniqueNumber) != null) {
+                Atm atm = atmRepository.getAtmInfo(uniqueNumber);
+                atm.setBlrRubBanknotes(new LinkedHashMap<>());
+                atm.setCash(0);
+                banknoteService.getBanknoteInfo(uniqueNumber).forEach(banknote -> {
+                    atm.putBanknote(banknote.getBanknoteDenomination(), banknote.getBanknotesNumber());
+                    atm.setCash(atm.getCash() + banknote.getBanknoteDenomination() * banknote.getBanknotesNumber());
+                });
+                return atm;
+            } else throw new InvalidDataException("ATM not found.");
+        } catch (InvalidDataException e) {
+            LOGGER.info(e);
+            return null;
+        }
     }
 
     /*
@@ -113,9 +120,7 @@ public class AtmServiceImpl implements AtmService {
                             break;
                         }
                         case 4: {
-                            LOGGER.info("Take the card...");
-                            finishWork(Account.getInstance());
-                            Account.setInstance(null);
+                            finishWork();
                         }
                         break;
                         default:
@@ -144,12 +149,9 @@ public class AtmServiceImpl implements AtmService {
         switch (selectNumber) {
             case 1:
                 break;
-            case 2: {
-                LOGGER.info("Take the card...");
-                finishWork(Account.getInstance());
-                Account.setInstance(null);
-            }
-            break;
+            case 2:
+                finishWork();
+                break;
             default:
                 try {
                     throw new InvalidDataException("Input Error!");
@@ -191,25 +193,25 @@ public class AtmServiceImpl implements AtmService {
     }
 
     @Override
-    public void finishWork(Account account) {
-        if (account.getLockStatus() == null) {
-            accountService.unlockAccount(account);
-        }
+    public void finishWork() {
+        LOGGER.info("Take the card...");
+        Account.setInstance(null);
+        accountService.unlockAccount(Account.getInstance());
     }
 
     @Override
     public void transferMoney(Account account, String cardNumber, Integer money) {
         Account destinationAccount = accountService.getAccountInfo(cardService.getByNumber(cardService.encryptSha256(cardNumber)));
-            //check of account money on account
-            try {
-                if (checkBalance(money)) {
-                    accountService.decrementMoney(account, money);
-                    accountService.incrementMoney(destinationAccount, money);
-                    LOGGER.info("Your transaction was successful");
-                } else throw new InvalidDataException("Insufficient funds.");
-            } catch (InvalidDataException e) {
-                LOGGER.info(e);
-            }
+        //check of account money on account
+        try {
+            if (checkBalance(money)) {
+                accountService.decrementMoney(account, money);
+                accountService.incrementMoney(destinationAccount, money);
+                LOGGER.info("Your transaction was successful");
+            } else throw new InvalidDataException("Insufficient funds.");
+        } catch (InvalidDataException e) {
+            LOGGER.info(e);
+        }
     }
 
     @Override

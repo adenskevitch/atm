@@ -1,7 +1,5 @@
 package com.solvd.atm.domain;
 
-import java.util.Objects;
-
 public class Account {
 
     private static Account instance;
@@ -76,5 +74,4 @@ public class Account {
     public void setLockStatus(Boolean lockStatus) {
         this.lockStatus = lockStatus;
     }
-
 }

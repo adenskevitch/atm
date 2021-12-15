@@ -7,6 +7,11 @@ public class Address {
     private String street;
     private String building;
 
+    @Override
+    public String toString() {
+        return city + ", " + street + " " + building;
+    }
+
     public Long getId() {
         return id;
     }
@@ -37,15 +42,5 @@ public class Address {
 
     public void setBuilding(String building) {
         this.building = building;
-    }
-
-    @Override
-    public String toString() {
-        return "Address{" +
-                "id=" + id +
-                ", city='" + city + '\'' +
-                ", street='" + street + '\'' +
-                ", building='" + building + '\'' +
-                '}';
     }
 }

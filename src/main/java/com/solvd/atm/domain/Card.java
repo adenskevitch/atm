@@ -55,5 +55,4 @@ public class Card {
     public void setPin(String pin) {
         this.pin = pin;
     }
-
 }
