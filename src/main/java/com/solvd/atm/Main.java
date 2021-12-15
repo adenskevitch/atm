@@ -18,8 +18,8 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         LOGGER.info("Input unique ATM number (ALFA001): ");
         String atmNumber = scanner.next();
-        Atm atm = new AtmServiceImpl().getAtmInfo(atmNumber);
-        LOGGER.info(atm);
+        Atm.setInstance(new AtmServiceImpl().getAtmInfo(atmNumber));
+        LOGGER.info(Atm.getInstance());
     }
 
     public static void main(String[] args) {
@@ -33,5 +33,4 @@ public class Main {
         atmService.inputCard();
         System.out.println(Account.getInstance());
     }
-
 }

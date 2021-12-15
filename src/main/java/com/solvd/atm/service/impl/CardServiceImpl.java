@@ -1,9 +1,9 @@
 package com.solvd.atm.service.impl;
 
+import com.solvd.atm.domain.Account;
 import com.solvd.atm.domain.Card;
 import com.solvd.atm.persistence.CardRepository;
 import com.solvd.atm.persistence.impl.CardRepositoryImpl;
-import com.solvd.atm.service.AccountService;
 import com.solvd.atm.service.CardService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -15,11 +15,9 @@ public class CardServiceImpl implements CardService {
     private static final Logger LOGGER = LogManager.getLogger(CardService.class);
 
     private final CardRepository cardRepository = new CardRepositoryImpl();
-    private final AccountService accountService = new AccountServiceImpl();
 
     private Boolean comparePin(Card card) {
-        String pin = cardRepository.findByNumber(card.getNumber()).getPin();
-        return card.getPin().equals(pin);
+        return card.getPin().equals(Account.getInstance().getCard().getPin());
     }
 
     @Override

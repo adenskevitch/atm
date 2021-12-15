@@ -1,7 +1,5 @@
 package com.solvd.atm.domain;
 
-import java.util.List;
-
 public class Account {
 
     private static Account instance;
@@ -9,7 +7,7 @@ public class Account {
     private Long id;
     private String number;
     private Integer money;
-    private List<Card> cards;
+    private Card card;
     private Boolean lockStatus;
 
     private Account() {
@@ -32,7 +30,7 @@ public class Account {
                 "id=" + id +
                 ", number='" + number + '\'' +
                 ", money=" + money +
-                ", cards=" + cards +
+                ", cards=" + card +
                 ", lockStatus=" + lockStatus +
                 '}';
     }
@@ -61,12 +59,12 @@ public class Account {
         this.money = money;
     }
 
-    public List<Card> getCards() {
-        return cards;
+    public Card getCard() {
+        return card;
     }
 
-    public void setCards(List<Card> cards) {
-        this.cards = cards;
+    public void setCard(Card card) {
+        this.card = card;
     }
 
     public Boolean getLockStatus() {
