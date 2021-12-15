@@ -1,5 +1,6 @@
 package com.solvd.atm.domain;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class Atm {
@@ -10,7 +11,7 @@ public class Atm {
     private String uniqueNumber;
     private Integer cash;
     private Address address;
-    private Map<Integer, Integer> blrRubBanknotes;
+    private LinkedHashMap<Integer, Integer> blrRubBanknotes;
 
     private Atm() {
     }
@@ -72,11 +73,11 @@ public class Atm {
         this.address = address;
     }
 
-    public Map<Integer, Integer> getBlrRubBanknotes() {
+    public LinkedHashMap<Integer, Integer> getBlrRubBanknotes() {
         return blrRubBanknotes;
     }
 
-    public void setBlrRubBanknotes(Map<Integer, Integer> blrRubBanknotes) {
+    public void setBlrRubBanknotes(LinkedHashMap<Integer, Integer> blrRubBanknotes) {
         this.blrRubBanknotes = blrRubBanknotes;
     }
 }

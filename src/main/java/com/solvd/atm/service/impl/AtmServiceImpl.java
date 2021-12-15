@@ -38,7 +38,7 @@ public class AtmServiceImpl implements AtmService {
     @Override
     public Atm getAtmInfo(String uniqueNumber) {
         Atm atm = atmRepository.getAtmInfo(uniqueNumber);
-        atm.setBlrRubBanknotes(new HashMap<>());
+        atm.setBlrRubBanknotes(new LinkedHashMap<>());
         atm.setCash(0);
         banknoteService.getBanknoteInfo(uniqueNumber).forEach(banknote -> {
             atm.putBanknote(banknote.getBanknoteDenomination(), banknote.getBanknotesNumber());
@@ -182,8 +182,7 @@ public class AtmServiceImpl implements AtmService {
                                 .forEach(o -> Atm.getInstance().getBlrRubBanknotes().put((Integer) Atm.getInstance().getBlrRubBanknotes().keySet().toArray()[i],
                                         (Atm.getInstance().getBlrRubBanknotes().get((Integer) Atm.getInstance().getBlrRubBanknotes().keySet().toArray()[i]) - 1))));
                 LOGGER.info(Atm.getInstance().getBlrRubBanknotes());
-                account.setMoney(account.getMoney() - money);
-                accountService.decrementMoney(account, account.getMoney());
+                accountService.decrementMoney(account, money);
                 LOGGER.info("Take the money...");
             } else throw new InvalidDataException("Insufficient funds!");
         } catch (InvalidDataException e) {
@@ -214,7 +213,7 @@ public class AtmServiceImpl implements AtmService {
     }
 
     @Override
-    public List<List<?>> moneyVariants(Map<Integer, Integer> cashInAtm, Integer requiredCash) {
+    public List<List<?>> moneyVariants(LinkedHashMap<Integer, Integer> cashInAtm, Integer requiredCash) {
         // list with lists of variants for user to select
         List<List<?>> listOfVariants = new ArrayList<>();
         // filling sumMap map with values

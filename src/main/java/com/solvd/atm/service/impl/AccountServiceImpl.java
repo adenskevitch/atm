@@ -62,5 +62,4 @@ public class AccountServiceImpl implements AccountService {
         Account account = accountRepository.getAccountInfo(card);
         return account.getMoney();
     }
-
 }
