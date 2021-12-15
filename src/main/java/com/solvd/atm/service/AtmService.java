@@ -38,4 +38,6 @@ public interface AtmService {
 
     void continueWork();
 
+    boolean checkBalance(Integer money);
+
 }

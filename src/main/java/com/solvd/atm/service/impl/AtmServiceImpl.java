@@ -3,6 +3,7 @@ package com.solvd.atm.service.impl;
 import com.solvd.atm.domain.Account;
 import com.solvd.atm.domain.Atm;
 import com.solvd.atm.domain.Card;
+import com.solvd.atm.domain.exception.InvalidDataException;
 import com.solvd.atm.persistence.AtmRepository;
 import com.solvd.atm.persistence.impl.AtmRepositoryImpl;
 import com.solvd.atm.service.AccountService;
@@ -16,6 +17,7 @@ import java.util.HashMap;
 import java.util.Scanner;
 
 import java.util.*;
+import java.util.stream.IntStream;
 
 public class AtmServiceImpl implements AtmService {
 
@@ -60,15 +62,11 @@ public class AtmServiceImpl implements AtmService {
             LOGGER.info("Please, enter card...");
             card = new Card();
             in = new Scanner(System.in);
-            card.setNumber(
-                    cardService.encryptSha256(in.nextLine())
-            );
+            card.setNumber(cardService.encryptSha256(in.nextLine()));
             /*
             checking for a card on the server
              */
-            if (accountService.getAccountInfo(card) == null) {
-                LOGGER.info("Card reading error");
-            } else {
+            if (accountService.getAccountInfo(card) != null) {
                 Account.setInstance(accountService.getAccountInfo(card));
                 System.out.println(Account.getInstance());
                 /*
@@ -87,27 +85,31 @@ public class AtmServiceImpl implements AtmService {
                               Place for account money check
                              */
                             getMoney(Account.getInstance(), money);
-                            LOGGER.info("Take the money...");
-                            LOGGER.info("Do you want to continue?\n1 - Yes.\n2 - No.");
                             continueWork();
                         }
                         break;
-                        case 2:{
+                        case 2: {
                             LOGGER.info("Enter number of destination card...");
                             in = new Scanner(System.in);
                             String cardNumber = in.nextLine();
                             //check of card input (exception)
-                            LOGGER.info("Enter the amount...");
-                            in = new Scanner(System.in);
-                            Integer money = in.nextInt();
-                            transferMoney(Account.getInstance(),cardNumber,money);
+                            try {
+                                if (accountService.getAccountInfo(new Card(cardService.encryptSha256(cardNumber))) != null) {
+                                    LOGGER.info("Enter the amount...");
+                                    in = new Scanner(System.in);
+                                    Integer money = in.nextInt();
+                                    transferMoney(Account.getInstance(), cardNumber, money);
+                                } else throw new InvalidDataException("Check if entered card number is correctly!");
+                            } catch (InvalidDataException e) {
+                                LOGGER.info(e);
+                            }
                             continueWork();
                             break;
                         }
-                        case 3:{
-                           Integer money = accountService.getBalance(card);
-                           LOGGER.info("Your account balance is: " + money);
-                           continueWork();
+                        case 3: {
+                            Integer money = accountService.getBalance(card);
+                            LOGGER.info("Your account balance is: " + money);
+                            continueWork();
                             break;
                         }
                         case 4: {
@@ -117,15 +119,25 @@ public class AtmServiceImpl implements AtmService {
                         }
                         break;
                         default:
-                            LOGGER.info("Input Error!");
+                            try {
+                                throw new InvalidDataException("Input Error!");
+                            } catch (InvalidDataException e) {
+                                LOGGER.info(e);
+                            }
                     }
+                }
+            } else {
+                try {
+                    throw new InvalidDataException("Card read error...  ");
+                } catch (InvalidDataException e) {
+                    LOGGER.info(e);
                 }
             }
         }
     }
 
     @Override
-    public void continueWork(){
+    public void continueWork() {
         Scanner in = new Scanner(System.in);
         LOGGER.info("Do you want to continue?\n1 - Yes.\n2 - No.");
         int selectNumber = in.nextInt();
@@ -139,17 +151,44 @@ public class AtmServiceImpl implements AtmService {
             }
             break;
             default:
-                LOGGER.info("Input Error!");
+                try {
+                    throw new InvalidDataException("Input Error!");
+                } catch (InvalidDataException e) {
+                    LOGGER.info(e);
+                }
         }
     }
 
     @Override
+    public boolean checkBalance(Integer money) {
+        return accountService.getBalance(Account.getInstance().getCard()) >= money;
+    }
+
+    @Override
     public void getMoney(Account account, Integer money) {
-        List<List<?>> banknotesVariants = moneyVariants(Atm.getInstance().getBlrRubBanknotes(), money);
-        LOGGER.info("Select banknotes...\n");
-        LOGGER.info(banknotesVariants);
-        account.setMoney(account.getMoney() - money);
-        accountService.decrementMoney(account, account.getMoney());
+        try {
+            if (checkBalance(money)) {
+                Scanner in = new Scanner(System.in);
+                List<List<?>> banknotesVariants = moneyVariants(Atm.getInstance().getBlrRubBanknotes(), money);
+                LOGGER.info("Select banknotes...\n");
+                IntStream.range(0, banknotesVariants.size())
+                        .mapToObj(i -> (i + 1) + "\t" + banknotesVariants.get(i) + "\n")
+                        .forEach(LOGGER::info);
+                List<?> resultVariant = banknotesVariants.get(in.nextInt() - 1);
+                LOGGER.info(Atm.getInstance().getBlrRubBanknotes());
+                IntStream.range(0, Atm.getInstance().getBlrRubBanknotes().size())
+                        .forEach(i -> resultVariant.stream()
+                                .filter(o -> Atm.getInstance().getBlrRubBanknotes().keySet().toArray()[i].equals(o))
+                                .forEach(o -> Atm.getInstance().getBlrRubBanknotes().put((Integer) Atm.getInstance().getBlrRubBanknotes().keySet().toArray()[i],
+                                        (Atm.getInstance().getBlrRubBanknotes().get((Integer) Atm.getInstance().getBlrRubBanknotes().keySet().toArray()[i]) - 1))));
+                LOGGER.info(Atm.getInstance().getBlrRubBanknotes());
+                account.setMoney(account.getMoney() - money);
+                accountService.decrementMoney(account, account.getMoney());
+                LOGGER.info("Take the money...");
+            } else throw new InvalidDataException("Insufficient funds!");
+        } catch (InvalidDataException e) {
+            LOGGER.info(e);
+        }
     }
 
     @Override
@@ -160,24 +199,27 @@ public class AtmServiceImpl implements AtmService {
     }
 
     @Override
-    public void transferMoney(Account account, String cardNumber, Integer money){
-        Account destinationAccount = accountService.getAccountInfo(cardService.getByNumber(cardNumber));
-        //check of account money on account
-        accountService.decrementMoney(account,money);
-        accountService.incrementMoney(destinationAccount,money);
-        LOGGER.info("Your transaction was successful");
+    public void transferMoney(Account account, String cardNumber, Integer money) {
+        Account destinationAccount = accountService.getAccountInfo(cardService.getByNumber(cardService.encryptSha256(cardNumber)));
+            //check of account money on account
+            try {
+                if (checkBalance(money)) {
+                    accountService.decrementMoney(account, money);
+                    accountService.incrementMoney(destinationAccount, money);
+                    LOGGER.info("Your transaction was successful");
+                } else throw new InvalidDataException("Insufficient funds.");
+            } catch (InvalidDataException e) {
+                LOGGER.info(e);
+            }
     }
 
     @Override
     public List<List<?>> moneyVariants(Map<Integer, Integer> cashInAtm, Integer requiredCash) {
-
         // list with lists of variants for user to select
         List<List<?>> listOfVariants = new ArrayList<>();
-
         // filling sumMap map with values
         // key -> banknote, value -> requiredCash / k (possible banknotes to give)
         Map<Integer, Integer> sumMap = new LinkedHashMap<>();
-
         cashInAtm.forEach((k, v) ->
         {
             if ((requiredCash / k) > v) {
@@ -186,48 +228,35 @@ public class AtmServiceImpl implements AtmService {
                 sumMap.put(k, requiredCash / k);
             }
         });
-
         System.out.println(sumMap);
-
-
         // number of variants for user to select
         for (int n = 0; n < 6; n++) {
-
             // variable to reset value of virtual required cash
             Integer virtualCash = requiredCash;
             // current variant of banknote set
             List<Integer> variant = new LinkedList<>();
-
             for (Map.Entry<Integer, Integer> entry : sumMap.entrySet()) {
-
                 Integer banknote = virtualCash / entry.getKey();
-
                 // loop for add banknotes with same value
                 for (int i = 0; i < banknote & i < entry.getValue(); i++) {
                     variant.add(entry.getKey());
                     virtualCash = virtualCash - entry.getKey();
                 }
             }
-
             // NOT add variant if it exists
             if (!listOfVariants.contains(variant)) {
                 if (Objects.equals(variant.stream().reduce(0, Integer::sum), requiredCash)) {
                     listOfVariants.add(variant);
                 }
             }
-
             for (Map.Entry<Integer, Integer> entry : sumMap.entrySet()) {
                 if (entry.getValue() > 0) {
                     entry.setValue(entry.getValue() - 1);
                     break;
                 }
             }
-
-
         }
-
 //        listOfVariants.forEach(nestedList -> nestedList.forEach(nominal -> ));
-
         return listOfVariants;
     }
 }

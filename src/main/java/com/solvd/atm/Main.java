@@ -3,15 +3,11 @@ package com.solvd.atm;
 import com.solvd.atm.domain.Account;
 import com.solvd.atm.domain.Atm;
 import com.solvd.atm.service.AtmService;
-import com.solvd.atm.service.CardService;
 import com.solvd.atm.service.impl.AtmServiceImpl;
-import com.solvd.atm.service.impl.CardServiceImpl;
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.Scanner;
-
 
 public class Main {
 
@@ -32,10 +28,8 @@ public class Main {
         // 3456709774562548     9870
         // 8354546509264896     2545
 
-
         AtmService atmService = new AtmServiceImpl();
         atmService.inputCard();
         System.out.println(Account.getInstance());
-
     }
 }
