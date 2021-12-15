@@ -13,7 +13,7 @@ import com.solvd.atm.service.CardService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.HashMap;
+import java.math.BigDecimal;
 import java.util.Scanner;
 
 import java.util.*;
@@ -80,7 +80,7 @@ public class AtmServiceImpl implements AtmService {
                     switch (selectNumber) {
                         case 1: {
                             LOGGER.info("Enter the amount...");
-                            Integer money = in.nextInt();
+                            BigDecimal money = new BigDecimal(in.next());
                             /*
                               Place for account money check
                              */
@@ -97,7 +97,7 @@ public class AtmServiceImpl implements AtmService {
                                 if (accountService.getAccountInfo(new Card(cardService.encryptSha256(cardNumber))) != null) {
                                     LOGGER.info("Enter the amount...");
                                     in = new Scanner(System.in);
-                                    Integer money = in.nextInt();
+                                    BigDecimal money = new BigDecimal(in.next());
                                     transferMoney(Account.getInstance(), cardNumber, money);
                                 } else throw new InvalidDataException("Check if entered card number is correctly!");
                             } catch (InvalidDataException e) {
@@ -107,7 +107,7 @@ public class AtmServiceImpl implements AtmService {
                             break;
                         }
                         case 3: {
-                            Integer money = accountService.getBalance(card);
+                            BigDecimal money = accountService.getBalance(card);
                             LOGGER.info("Your account balance is: " + money);
                             continueWork();
                             break;
@@ -160,16 +160,18 @@ public class AtmServiceImpl implements AtmService {
     }
 
     @Override
-    public boolean checkBalance(Integer money) {
-        return accountService.getBalance(Account.getInstance().getCard()) >= money;
+    public boolean checkBalance(BigDecimal money) {
+        int result = accountService.getBalance(Account.getInstance().getCard()).compareTo(money);
+        return result == 1 || result == 0;
     }
 
     @Override
-    public void getMoney(Account account, Integer money) {
+    public void getMoney(Account account, BigDecimal money) {
         try {
             if (checkBalance(money)) {
                 Scanner in = new Scanner(System.in);
-                List<List<?>> banknotesVariants = moneyVariants(Atm.getInstance().getBlrRubBanknotes(), money);
+                Integer intMoney = money.intValue();
+                List<List<?>> banknotesVariants = moneyVariants(Atm.getInstance().getBlrRubBanknotes(), intMoney);
                 LOGGER.info("Select banknotes...\n");
                 IntStream.range(0, banknotesVariants.size())
                         .mapToObj(i -> (i + 1) + "\t" + banknotesVariants.get(i) + "\n")
@@ -198,7 +200,7 @@ public class AtmServiceImpl implements AtmService {
     }
 
     @Override
-    public void transferMoney(Account account, String cardNumber, Integer money) {
+    public void transferMoney(Account account, String cardNumber, BigDecimal money) {
         Account destinationAccount = accountService.getAccountInfo(cardService.getByNumber(cardService.encryptSha256(cardNumber)));
             //check of account money on account
             try {

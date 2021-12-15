@@ -4,6 +4,8 @@ import com.solvd.atm.domain.Account;
 import com.solvd.atm.domain.Card;
 import org.apache.ibatis.annotations.Param;
 
+import java.math.BigDecimal;
+
 public interface AccountRepository {
 
     //    set account lock
@@ -15,7 +17,7 @@ public interface AccountRepository {
      * update account_money
      * update atm_cash
      */
-    void changeAccountMoney(@Param("account") Account account, @Param("money") Integer money);
+    void changeAccountMoney(@Param("account") Account account, @Param("money") BigDecimal money);
 
     //    set account unlock
     void unblockAccount(Account account);

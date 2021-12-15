@@ -1,6 +1,6 @@
 package com.solvd.atm.domain;
 
-import java.util.Objects;
+import java.math.BigDecimal;
 
 public class Account {
 
@@ -8,7 +8,7 @@ public class Account {
 
     private Long id;
     private String number;
-    private Integer money;
+    private BigDecimal money;
     private Card card;
     private Boolean lockStatus;
 
@@ -53,11 +53,11 @@ public class Account {
         this.number = number;
     }
 
-    public Integer getMoney() {
+    public BigDecimal getMoney() {
         return money;
     }
 
-    public void setMoney(Integer money) {
+    public void setMoney(BigDecimal money) {
         this.money = money;
     }
 

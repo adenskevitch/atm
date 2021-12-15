@@ -9,6 +9,8 @@ import com.solvd.atm.service.AccountService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.math.BigDecimal;
+
 public class AccountServiceImpl implements AccountService {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -42,13 +44,13 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public void decrementMoney(Account account, Integer money) {
-        accountRepository.changeAccountMoney(account, account.getMoney() - money);
+    public void decrementMoney(Account account, BigDecimal money) {
+        accountRepository.changeAccountMoney(account, account.getMoney().subtract(money));
     }
 
     @Override
-    public void incrementMoney(Account account, Integer money) {
-        accountRepository.changeAccountMoney(account, account.getMoney() + money);
+    public void incrementMoney(Account account, BigDecimal money) {
+        accountRepository.changeAccountMoney(account, account.getMoney().add(money));
     }
 
     @Override
@@ -58,7 +60,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public Integer getBalance(Card card) {
+    public BigDecimal getBalance(Card card) {
         Account account = accountRepository.getAccountInfo(card);
         return account.getMoney();
     }
