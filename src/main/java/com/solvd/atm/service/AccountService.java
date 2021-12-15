@@ -13,4 +13,8 @@ public interface AccountService {
 
     void lockAccount(Account account);
 
+    void incrementMoney(Account account, Integer money);
+
+    Integer getBalance(Card card);
+
 }

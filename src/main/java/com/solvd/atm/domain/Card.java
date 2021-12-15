@@ -7,6 +7,13 @@ public class Card {
     private Boolean blocked;
     private String pin;
 
+    public Card(String cardNumber) {
+        this.number = cardNumber;
+    }
+
+    public Card() {
+    }
+
     @Override
     public String toString() {
         return "Card{" +

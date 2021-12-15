@@ -3,8 +3,8 @@ package com.solvd.atm.service;
 import com.solvd.atm.domain.Account;
 import com.solvd.atm.domain.Atm;
 
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 public interface AtmService {
 
@@ -32,6 +32,12 @@ public interface AtmService {
      */
     void finishWork(Account account);
 
-    List<List<?>> moneyVariants(Map<Integer, Integer> cashInAtm, Integer requiredCash);
+    List<List<?>> moneyVariants(LinkedHashMap<Integer, Integer> cashInAtm, Integer requiredCash);
+
+    void transferMoney(Account account, String cardNumber, Integer money);
+
+    void continueWork();
+
+    boolean checkBalance(Integer money);
 
 }

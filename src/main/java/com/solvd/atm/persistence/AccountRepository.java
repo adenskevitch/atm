@@ -15,7 +15,7 @@ public interface AccountRepository {
      * update account_money
      * update atm_cash
      */
-    void decrementAccountMoney(@Param("account") Account account, @Param("money") Integer money);
+    void changeAccountMoney(@Param("account") Account account, @Param("money") Integer money);
 
     //    set account unlock
     void unblockAccount(Account account);
