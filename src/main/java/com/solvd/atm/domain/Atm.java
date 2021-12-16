@@ -33,7 +33,7 @@ public class Atm {
 
     @Override
     public String toString() {
-        return bank + " ATM. Number: " + uniqueNumber + ". Location: " + address + " (card number for example: 4578091276840365 pin: 4567)";
+        return bank + " ATM. Number: " + uniqueNumber + ". Location: " + address + " (card number for example: 4578091276840365 pin: 4567) commission - "+bank.getCommission() ;
     }
 
     public Long getId() {

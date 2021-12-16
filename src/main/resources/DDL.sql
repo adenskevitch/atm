@@ -31,7 +31,7 @@ on update no action on delete cascade
 
 create table if not exists Banknotes (
 id serial,
-denomination int unique not null,
+denomination int not null,
 number int unsigned,
 currency_unit varchar(30) not null,
 atm_id bigint unsigned not null,

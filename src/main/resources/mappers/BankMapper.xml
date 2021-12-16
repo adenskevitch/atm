@@ -9,4 +9,5 @@
     <result property="name" column="bank_name"/>
     <result property="commission" column="bank_commission"/>
 </resultMap>
+
 </mapper>

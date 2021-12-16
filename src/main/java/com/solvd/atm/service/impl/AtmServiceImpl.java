@@ -56,9 +56,8 @@ public class AtmServiceImpl implements AtmService {
     }
 
     /*
-        This method is basic for ATM application.
-        It provides human interaction and include local methods for different operations and card validation.
-         */
+
+     */
     @Override
     public void inputCard() {
         Card card;
@@ -189,7 +188,7 @@ public class AtmServiceImpl implements AtmService {
             if (checkBalance(money)) {
                 Scanner in = new Scanner(System.in);
                 Integer intMoney = money.intValue();
-                double commission = findCommission(account, Atm.getInstance());
+                double commission = findCommission();
                 int selectNumber = useCommission(commission);
                 commission = commission / 100;
                 BigDecimal commissionSum = money.multiply(BigDecimal.valueOf(commission));
@@ -231,9 +230,9 @@ public class AtmServiceImpl implements AtmService {
     }
 
     @Override
-    public Double findCommission(Account account, Atm atm) {
-        Bank bank = accountService.getBank(account);
-        Bank atmBank = atmRepository.getBankInfo(atm);
+    public Double findCommission() {
+        Bank bank = Account.getInstance().getBank();
+        Bank atmBank = Atm.getInstance().getBank();
         if (!bank.getId().equals(atmBank.getId())) {
             return atmBank.getCommission();
         } else {
@@ -260,7 +259,7 @@ public class AtmServiceImpl implements AtmService {
         //check of account money on account
         try {
             if (checkBalance(money)) {
-                double commission = findCommission(account, Atm.getInstance());
+                double commission = findCommission();
                 int selectNumber = useCommission(commission);
                 commission = commission / 100;
                 BigDecimal commissionSum = money.multiply(BigDecimal.valueOf(commission));

@@ -19,9 +19,4 @@
         <result property="banknotesNumber" column="banknote_number"/>
     </resultMap>
 
-    <!--    <resultMap id="BanknoteResultMap" type="java.util.Map" autoMapping="false">-->
-    <!--        <result property="key" column="banknote_denomination"/>-->
-    <!--        <result property="value" column="banknote_number"/>-->
-    <!--    </resultMap>-->
-
 </mapper>

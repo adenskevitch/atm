@@ -11,6 +11,7 @@ public class Account {
     private BigDecimal money;
     private Card card;
     private Boolean lockStatus;
+    private Bank bank;
 
     private Account() {
     }
@@ -77,4 +78,11 @@ public class Account {
         this.lockStatus = lockStatus;
     }
 
+    public Bank getBank() {
+        return bank;
+    }
+
+    public void setBank(Bank bank) {
+        this.bank = bank;
+    }
 }
