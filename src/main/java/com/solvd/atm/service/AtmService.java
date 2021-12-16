@@ -72,5 +72,5 @@ public interface AtmService {
      * This method calculate the commission depending on the current ATM
      * @return - commission percent
      */
-    Double findCommission();
+    Double findCommission(Account account, Atm atm);
 }

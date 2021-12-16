@@ -14,15 +14,19 @@
         where number = #{number}
     </sql>
 
+    <select id="getBankInfo" resultMap="BankResultMap">
+        Select b.id as bank_id, b.name as bank_name, b.commission as bank_commission from Banks b left join
+        Accounts a on a.bank_id=b.id where a.number = #{number}
+    </select>
+
     <select id="getAccountInfo" resultMap="AccountInfoResultMap">
         Select
-        a.number as account_number, a.money as account_money, b.id as bank_id, b.name as bank_name, c.number as
+        a.number as account_number, a.money as account_money, c.number as
         card_number, c.pin as card_pin,
         c.blocked as card_blocked, a.lock_status as lock_status
         From
         Accounts a left join Cards c
-        on a.id = c.account_id left join Banks b
-        on a.bank_id = b.id
+        on a.id = c.account_id
         Where
         c.number = #{number}
     </select>
@@ -52,7 +56,6 @@
         <result property="number" column="account_number"/>
         <result property="money" column="account_money"/>
         <result property="lockStatus" column="lock_status"/>
-        <association property="bank" resultMap="com.solvd.atm.persistence.BankRepository.BankResultMap"/>
         <association property="card" resultMap="com.solvd.atm.persistence.CardRepository.CardResultMap"/>
     </resultMap>
 

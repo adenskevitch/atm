@@ -10,7 +10,6 @@ public class Atm {
     private String uniqueNumber;
     private Integer cash;
     private Address address;
-    private Bank bank;
     private LinkedHashMap<Integer, Integer> blrRubBanknotes;
 
     private Atm() {
@@ -33,7 +32,7 @@ public class Atm {
 
     @Override
     public String toString() {
-        return bank + " ATM. Number: " + uniqueNumber + ". Location: " + address + " (card number for example: 4578091276840365 pin: 4567) commission - "+bank.getCommission() ;
+        return " ATM. Number: " + uniqueNumber + ". Location: " + address + " (card number for example: 4578091276840365 pin: 4567) commission - ";
     }
 
     public Long getId() {
@@ -74,13 +73,5 @@ public class Atm {
 
     public void setBlrRubBanknotes(LinkedHashMap<Integer, Integer> blrRubBanknotes) {
         this.blrRubBanknotes = blrRubBanknotes;
-    }
-
-    public Bank getBank() {
-        return bank;
-    }
-
-    public void setBank(Bank bank) {
-        this.bank = bank;
     }
 }

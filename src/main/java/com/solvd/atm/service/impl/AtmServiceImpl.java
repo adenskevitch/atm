@@ -18,6 +18,7 @@ import java.math.BigDecimal;
 import java.util.Scanner;
 
 import java.util.*;
+import java.util.function.UnaryOperator;
 import java.util.stream.IntStream;
 
 public class AtmServiceImpl implements AtmService {
@@ -169,8 +170,26 @@ public class AtmServiceImpl implements AtmService {
         Scanner in = new Scanner(System.in);
         List<List<?>> banknotesVariants = moneyVariants(Atm.getInstance().getBlrRubBanknotes(), intMoney);
         LOGGER.info("Select banknotes...\n");
+
+        /*
+         * Lambda to transform lists like [200, 200, 100]
+         * to lists [2x200, 1x100]
+         */
+        UnaryOperator<List<?>> transform = list -> {
+            List<String> output = new ArrayList<>();
+            list.forEach(x -> {
+                if (!output.contains(Collections.frequency(list, x) + "x" + x)) {
+                    output.add(Collections.frequency(list, x) + "x" + x);
+                }
+            });
+            return output;
+        };
         IntStream.range(0, banknotesVariants.size())
-                .mapToObj(i -> (i + 1) + "\t" + banknotesVariants.get(i) + "\n")
+                .mapToObj(
+                        i -> (i + 1) +
+                                "\t" +
+                                transform.apply(banknotesVariants.get(i)) +
+                                "\n")
                 .forEach(LOGGER::info);
         List<?> resultVariant = banknotesVariants.get(in.nextInt() - 1);
         LOGGER.info(Atm.getInstance().getBlrRubBanknotes());
@@ -188,7 +207,7 @@ public class AtmServiceImpl implements AtmService {
             if (checkBalance(money)) {
                 Scanner in = new Scanner(System.in);
                 Integer intMoney = money.intValue();
-                double commission = findCommission();
+                double commission = findCommission(account, Atm.getInstance());
                 int selectNumber = useCommission(commission);
                 commission = commission / 100;
                 BigDecimal commissionSum = money.multiply(BigDecimal.valueOf(commission));
@@ -230,9 +249,9 @@ public class AtmServiceImpl implements AtmService {
     }
 
     @Override
-    public Double findCommission() {
-        Bank bank = Account.getInstance().getBank();
-        Bank atmBank = Atm.getInstance().getBank();
+    public Double findCommission(Account account, Atm atm) {
+        Bank bank = accountService.getBank(account);
+        Bank atmBank = atmRepository.getBankInfo(atm);
         if (!bank.getId().equals(atmBank.getId())) {
             return atmBank.getCommission();
         } else {
@@ -259,7 +278,7 @@ public class AtmServiceImpl implements AtmService {
         //check of account money on account
         try {
             if (checkBalance(money)) {
-                double commission = findCommission();
+                double commission = findCommission(account, Atm.getInstance());
                 int selectNumber = useCommission(commission);
                 commission = commission / 100;
                 BigDecimal commissionSum = money.multiply(BigDecimal.valueOf(commission));
