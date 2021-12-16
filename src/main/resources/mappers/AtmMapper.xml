@@ -23,6 +23,11 @@
         at.number = #{uniqueNumber}
     </select>
 
+    <select id="getBankInfo" resultMap="com.solvd.atm.persistence.AccountRepository.BankResultMap">
+        select b.id as bank_id, b.name as bank_name, b.commission as bank_commission
+        from Banks b left join ATMs a on a.bank_id = b.id where a.id=#{id}
+    </select>
+
     <resultMap id="getAtmInfoResultMap" type="Atm" autoMapping="false">
         <id property="id" column="atm_id"/>
         <result property="uniqueNumber" column="atm_number"/>

@@ -4,9 +4,9 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.solvd.atm.persistence.BankRepository">
 
-    <resultMap id="BankResultMap" type="Bank" autoMapping="false">
-        <id property="id" column="bank_id"/>
-        <result property="name" column="bank_name"/>
-    </resultMap>
-
+<resultMap id="BankResultMap" type="Bank" autoMapping="false">
+    <id property="id" column="bank_id"/>
+    <result property="name" column="bank_name"/>
+    <result property="commission" column="bank_commission"/>
+</resultMap>
 </mapper>

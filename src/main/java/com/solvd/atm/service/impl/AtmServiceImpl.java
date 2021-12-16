@@ -2,6 +2,7 @@ package com.solvd.atm.service.impl;
 
 import com.solvd.atm.domain.Account;
 import com.solvd.atm.domain.Atm;
+import com.solvd.atm.domain.Bank;
 import com.solvd.atm.domain.Card;
 import com.solvd.atm.domain.exception.InvalidDataException;
 import com.solvd.atm.persistence.AtmRepository;
@@ -13,7 +14,7 @@ import com.solvd.atm.service.CardService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.HashMap;
+import java.math.BigDecimal;
 import java.util.Scanner;
 
 import java.util.*;
@@ -87,12 +88,11 @@ public class AtmServiceImpl implements AtmService {
                     switch (selectNumber) {
                         case 1: {
                             LOGGER.info("Enter the amount...");
-                            Integer money = in.nextInt();
+                            BigDecimal money = new BigDecimal(in.next());
                             /*
                               Place for account money check
                              */
                             getMoney(Account.getInstance(), money);
-                            continueWork();
                         }
                         break;
                         case 2: {
@@ -104,17 +104,16 @@ public class AtmServiceImpl implements AtmService {
                                 if (accountService.getAccountInfo(new Card(cardService.encryptSha256(cardNumber))) != null) {
                                     LOGGER.info("Enter the amount...");
                                     in = new Scanner(System.in);
-                                    Integer money = in.nextInt();
+                                    BigDecimal money = new BigDecimal(in.next());
                                     transferMoney(Account.getInstance(), cardNumber, money);
                                 } else throw new InvalidDataException("Check if entered card number is correctly!");
                             } catch (InvalidDataException e) {
                                 LOGGER.info(e);
                             }
-                            continueWork();
                             break;
                         }
                         case 3: {
-                            Integer money = accountService.getBalance(card);
+                            BigDecimal money = accountService.getBalance(card);
                             LOGGER.info("Your account balance is: " + money);
                             continueWork();
                             break;
@@ -162,30 +161,62 @@ public class AtmServiceImpl implements AtmService {
     }
 
     @Override
-    public boolean checkBalance(Integer money) {
-        return accountService.getBalance(Account.getInstance().getCard()) >= money;
+    public boolean checkBalance(BigDecimal money) {
+        int result = accountService.getBalance(Account.getInstance().getCard()).compareTo(money);
+        return result == 1 || result == 0;
+    }
+
+    private void moneyWithdrawal(Integer intMoney) {
+        Scanner in = new Scanner(System.in);
+        List<List<?>> banknotesVariants = moneyVariants(Atm.getInstance().getBlrRubBanknotes(), intMoney);
+        LOGGER.info("Select banknotes...\n");
+        IntStream.range(0, banknotesVariants.size())
+                .mapToObj(i -> (i + 1) + "\t" + banknotesVariants.get(i) + "\n")
+                .forEach(LOGGER::info);
+        List<?> resultVariant = banknotesVariants.get(in.nextInt() - 1);
+        LOGGER.info(Atm.getInstance().getBlrRubBanknotes());
+        IntStream.range(0, Atm.getInstance().getBlrRubBanknotes().size())
+                .forEach(i -> resultVariant.stream()
+                        .filter(o -> Atm.getInstance().getBlrRubBanknotes().keySet().toArray()[i].equals(o))
+                        .forEach(o -> Atm.getInstance().getBlrRubBanknotes().put((Integer) Atm.getInstance().getBlrRubBanknotes().keySet().toArray()[i],
+                                (Atm.getInstance().getBlrRubBanknotes().get((Integer) Atm.getInstance().getBlrRubBanknotes().keySet().toArray()[i]) - 1))));
+        LOGGER.info(Atm.getInstance().getBlrRubBanknotes());
     }
 
     @Override
-    public void getMoney(Account account, Integer money) {
+    public void getMoney(Account account, BigDecimal money) {
         try {
             if (checkBalance(money)) {
                 Scanner in = new Scanner(System.in);
-                List<List<?>> banknotesVariants = moneyVariants(Atm.getInstance().getBlrRubBanknotes(), money);
-                LOGGER.info("Select banknotes...\n");
-                IntStream.range(0, banknotesVariants.size())
-                        .mapToObj(i -> (i + 1) + "\t" + banknotesVariants.get(i) + "\n")
-                        .forEach(LOGGER::info);
-                List<?> resultVariant = banknotesVariants.get(in.nextInt() - 1);
-                LOGGER.info(Atm.getInstance().getBlrRubBanknotes());
-                IntStream.range(0, Atm.getInstance().getBlrRubBanknotes().size())
-                        .forEach(i -> resultVariant.stream()
-                                .filter(o -> Atm.getInstance().getBlrRubBanknotes().keySet().toArray()[i].equals(o))
-                                .forEach(o -> Atm.getInstance().getBlrRubBanknotes().put((Integer) Atm.getInstance().getBlrRubBanknotes().keySet().toArray()[i],
-                                        (Atm.getInstance().getBlrRubBanknotes().get((Integer) Atm.getInstance().getBlrRubBanknotes().keySet().toArray()[i]) - 1))));
-                LOGGER.info(Atm.getInstance().getBlrRubBanknotes());
-                accountService.decrementMoney(account, money);
-                LOGGER.info("Take the money...");
+                Integer intMoney = money.intValue();
+                double commission = findCommission(account, Atm.getInstance());
+                int selectNumber = useCommission(commission);
+                commission = commission / 100;
+                BigDecimal commissionSum = money.multiply(BigDecimal.valueOf(commission));
+                switch (selectNumber) {
+                    case 1: {
+                        if (checkBalance(money.add(commissionSum))) {
+                            moneyWithdrawal(intMoney);
+                            BigDecimal fullAmount = money.add(commissionSum);
+                            accountService.decrementMoney(account, fullAmount);
+                            LOGGER.info("Take the money...");
+                        } else {
+                            throw new InvalidDataException("You don't have enough money to pay commission");
+                        }
+                        continueWork();
+                        break;
+                    }
+                    case 2: {
+                        continueWork();
+                    }
+                    default: {
+                        try {
+                            throw new InvalidDataException("Input Error!");
+                        } catch (InvalidDataException e) {
+                            LOGGER.info(e);
+                        }
+                    }
+                }
             } else throw new InvalidDataException("Insufficient funds!");
         } catch (InvalidDataException e) {
             LOGGER.info(e);
@@ -200,14 +231,62 @@ public class AtmServiceImpl implements AtmService {
     }
 
     @Override
-    public void transferMoney(Account account, String cardNumber, Integer money) {
+    public Double findCommission(Account account, Atm atm) {
+        Bank bank = accountService.getBank(account);
+        Bank atmBank = atmRepository.getBankInfo(atm);
+        if (!bank.getId().equals(atmBank.getId())) {
+            return atmBank.getCommission();
+        } else {
+            return 0.0;
+        }
+    }
+
+    private int useCommission(double commission) {
+        Scanner in = new Scanner(System.in);
+        int number;
+        if (commission != 0.0) {
+            LOGGER.info("Operation will cost " + commission + "%");
+            LOGGER.info("\n1 - Continue.\n2 - Cancel.");
+            number = in.nextInt();
+        } else {
+            number = 1;
+        }
+        return number;
+    }
+
+    @Override
+    public void transferMoney(Account account, String cardNumber, BigDecimal money) {
         Account destinationAccount = accountService.getAccountInfo(cardService.getByNumber(cardService.encryptSha256(cardNumber)));
         //check of account money on account
         try {
             if (checkBalance(money)) {
-                accountService.decrementMoney(account, money);
-                accountService.incrementMoney(destinationAccount, money);
-                LOGGER.info("Your transaction was successful");
+                double commission = findCommission(account, Atm.getInstance());
+                int selectNumber = useCommission(commission);
+                commission = commission / 100;
+                BigDecimal commissionSum = money.multiply(BigDecimal.valueOf(commission));
+                switch (selectNumber) {
+                    case 1: {
+                        if (checkBalance(money.add(commissionSum))) {
+                            BigDecimal fullAmount = money.add(commissionSum);
+                            accountService.decrementMoney(account, fullAmount);
+                            accountService.incrementMoney(destinationAccount, money);
+                            LOGGER.info("Your transaction was successful");
+                        } else throw new InvalidDataException("You don't have enough money to pay commission");
+                        continueWork();
+                        break;
+                    }
+                    case 2: {
+                        continueWork();
+                        break;
+                    }
+                    default: {
+                        try {
+                            throw new InvalidDataException("Input Error!");
+                        } catch (InvalidDataException e) {
+                            LOGGER.info(e);
+                        }
+                    }
+                }
             } else throw new InvalidDataException("Insufficient funds.");
         } catch (InvalidDataException e) {
             LOGGER.info(e);
