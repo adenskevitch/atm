@@ -11,12 +11,15 @@ public interface AtmService {
 
     /**
      * This method for initialisation atm's object.
+     *
      * @param atmNumber get from config file.
      * @return if DB contain atm with atmNumber
      */
     Atm getAtmInfo(String atmNumber);
 
     /**
+     * It is the basic method.
+     * waiting for card input
      * block account
      * create local account object
      * an invitation to insert a card and checking the correctness of the PIN code
@@ -28,6 +31,7 @@ public interface AtmService {
      * This method is basic for ATM application.
      * It provides human interaction and include local methods for different operations and card validation.
      * quantity of many
+     *
      * @param money user input from keyboard
      */
     void getMoney(Account account, BigDecimal money);
@@ -42,7 +46,8 @@ public interface AtmService {
 
     /**
      * This method provides various options for sets of banknotes
-     * @param cashInAtm - ATMs banknotes list
+     *
+     * @param cashInAtm    - ATMs banknotes list
      * @param requiredCash - user input
      * @return - options for issuing banknotes
      */
@@ -50,14 +55,16 @@ public interface AtmService {
 
     /**
      * This method performs the function of transferring money
-     * @param account - current user account
+     *
+     * @param account    - current user account
      * @param cardNumber - destination card number for transfer
-     * @param money - transfer amount
+     * @param money      - transfer amount
      */
     void transferMoney(Account account, String cardNumber, BigDecimal money);
 
     /**
      * This support method for checking the availability of the amount on the account
+     *
      * @param money - amount for check
      * @return - true if the amount is in stock, or false if not.
      */
@@ -70,6 +77,7 @@ public interface AtmService {
 
     /**
      * This method calculate the commission depending on the current ATM
+     *
      * @return - commission percent
      */
     Double findCommission(Account account, Atm atm);

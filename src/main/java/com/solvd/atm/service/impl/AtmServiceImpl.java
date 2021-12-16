@@ -56,16 +56,10 @@ public class AtmServiceImpl implements AtmService {
         }
     }
 
-    /*
-
-     */
     @Override
     public void inputCard() {
         Card card;
         Scanner in;
-        /*
-        waiting for card input
-         */
         while (true) {
             LOGGER.info("Please, enter card...");
             card = new Card();
@@ -170,7 +164,6 @@ public class AtmServiceImpl implements AtmService {
         Scanner in = new Scanner(System.in);
         List<List<?>> banknotesVariants = moneyVariants(Atm.getInstance().getBlrRubBanknotes(), intMoney);
         LOGGER.info("Select banknotes...\n");
-
         /*
          * Lambda to transform lists like [200, 200, 100]
          * to lists [2x200, 1x100]
@@ -354,7 +347,6 @@ public class AtmServiceImpl implements AtmService {
                 }
             }
         }
-//        listOfVariants.forEach(nestedList -> nestedList.forEach(nominal -> ));
         return listOfVariants;
     }
 }

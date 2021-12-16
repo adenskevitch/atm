@@ -45,5 +45,4 @@ public class AccountRepositoryImpl implements AccountRepository {
             return session.getMapper(AccountRepository.class).getBankInfo(account);
         }
     }
-
 }
