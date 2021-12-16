@@ -17,6 +17,8 @@ import java.util.HashMap;
 import java.util.Scanner;
 
 import java.util.*;
+import java.util.function.UnaryOperator;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class AtmServiceImpl implements AtmService {
@@ -171,9 +173,29 @@ public class AtmServiceImpl implements AtmService {
                 Scanner in = new Scanner(System.in);
                 List<List<?>> banknotesVariants = moneyVariants(Atm.getInstance().getBlrRubBanknotes(), money);
                 LOGGER.info("Select banknotes...\n");
+
+                /*
+                 * Lambda to transform lists like [200, 200, 100]
+                 * to lists [2x200, 1x100]
+                 */
+                UnaryOperator<List<?>> transform = list -> {
+                    List<String> output = new ArrayList<>();
+                    list.forEach(x -> {
+                        if (!output.contains(Collections.frequency(list, x) + "x" + x)) {
+                            output.add(Collections.frequency(list, x) + "x" + x);
+                        }
+                    });
+                    return output;
+                };
+
                 IntStream.range(0, banknotesVariants.size())
-                        .mapToObj(i -> (i + 1) + "\t" + banknotesVariants.get(i) + "\n")
+                        .mapToObj(
+                                i -> (i + 1) +
+                                        "\t" +
+                                        transform.apply(banknotesVariants.get(i)) +
+                                        "\n")
                         .forEach(LOGGER::info);
+
                 List<?> resultVariant = banknotesVariants.get(in.nextInt() - 1);
                 LOGGER.info(Atm.getInstance().getBlrRubBanknotes());
                 IntStream.range(0, Atm.getInstance().getBlrRubBanknotes().size())
@@ -214,11 +236,13 @@ public class AtmServiceImpl implements AtmService {
 
     @Override
     public List<List<?>> moneyVariants(LinkedHashMap<Integer, Integer> cashInAtm, Integer requiredCash) {
+
         // list with lists of variants for user to select
         List<List<?>> listOfVariants = new ArrayList<>();
         // filling sumMap map with values
         // key -> banknote, value -> requiredCash / k (possible banknotes to give)
         Map<Integer, Integer> sumMap = new LinkedHashMap<>();
+
         cashInAtm.forEach((k, v) ->
         {
             if ((requiredCash / k) > v) {
@@ -227,13 +251,14 @@ public class AtmServiceImpl implements AtmService {
                 sumMap.put(k, requiredCash / k);
             }
         });
-        System.out.println(sumMap);
+
         // number of variants for user to select
         for (int n = 0; n < 6; n++) {
             // variable to reset value of virtual required cash
             Integer virtualCash = requiredCash;
             // current variant of banknote set
             List<Integer> variant = new LinkedList<>();
+
             for (Map.Entry<Integer, Integer> entry : sumMap.entrySet()) {
                 Integer banknote = virtualCash / entry.getKey();
                 // loop for add banknotes with same value
@@ -255,7 +280,6 @@ public class AtmServiceImpl implements AtmService {
                 }
             }
         }
-//        listOfVariants.forEach(nestedList -> nestedList.forEach(nominal -> ));
         return listOfVariants;
     }
 }
