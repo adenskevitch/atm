@@ -1,6 +1,7 @@
 package com.solvd.atm.service;
 
 import com.solvd.atm.domain.Account;
+import com.solvd.atm.domain.Bank;
 import com.solvd.atm.domain.Card;
 
 import java.math.BigDecimal;
@@ -18,5 +19,7 @@ public interface AccountService {
     void incrementMoney(Account account, BigDecimal money);
 
     BigDecimal getBalance(Card card);
+
+    Bank getBank(Account account);
 
 }

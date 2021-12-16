@@ -2,6 +2,7 @@ package com.solvd.atm.service;
 
 import com.solvd.atm.domain.Account;
 import com.solvd.atm.domain.Atm;
+import com.solvd.atm.domain.Bank;
 
 import java.math.BigDecimal;
 import java.util.LinkedHashMap;
@@ -41,4 +42,5 @@ public interface AtmService {
 
     boolean checkBalance(BigDecimal money);
 
+    Double findCommission(Account account, Atm atm);
 }

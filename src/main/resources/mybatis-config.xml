@@ -26,6 +26,7 @@
 		<mapper resource="mappers/CardMapper.xml"/>
 		<mapper resource="mappers/AtmMapper.xml"/>
 		<mapper resource="mappers/BanknoteMapper.xml"/>
+		<mapper resource="mappers/BankMapper.xml"/>
 	</mappers>
 	
 </configuration>

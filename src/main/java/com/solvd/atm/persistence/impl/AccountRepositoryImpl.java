@@ -1,6 +1,7 @@
 package com.solvd.atm.persistence.impl;
 
 import com.solvd.atm.domain.Account;
+import com.solvd.atm.domain.Bank;
 import com.solvd.atm.domain.Card;
 import com.solvd.atm.persistence.AccountRepository;
 import com.solvd.atm.persistence.MyBatisSessionHolder;
@@ -35,6 +36,13 @@ public class AccountRepositoryImpl implements AccountRepository {
     public void unblockAccount(Account account) {
         try (SqlSession session = MyBatisSessionHolder.getSqlSessionFactory().openSession(true)) {
             session.getMapper(AccountRepository.class).unblockAccount(account);
+        }
+    }
+
+    @Override
+    public Bank getBankInfo(Account account) {
+        try (SqlSession session = MyBatisSessionHolder.getSqlSessionFactory().openSession(true)) {
+            return session.getMapper(AccountRepository.class).getBankInfo(account);
         }
     }
 

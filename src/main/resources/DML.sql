@@ -1,10 +1,10 @@
 use atm;
-insert into Banks (name) values
-('Alfa-bank'),
-('Bank VTB'),
-('Bank Dabrabyt'),
-('Priorbank'),
-('Belarusbank');
+insert into Banks (name, commission) values
+('Alfa-bank',2.5),
+('Bank VTB',3.0),
+('Bank Dabrabyt',2.0),
+('Priorbank',2.7),
+('Belarusbank',3.5);
 
 insert into Addresses (city, street, building) values
 ('Minsk','Denisovskaya','8/2'),
@@ -16,7 +16,7 @@ insert into Addresses (city, street, building) values
 ('Minsk','Mstislavca','11'),
 ('Minsk','Makaenka','9');
 
-insert into ATMs (number,cash, bank_id, address_id) values
+insert into ATMs (number, cash, bank_id, address_id) values
 ('ALFA001',345000, 1, 1),
 ('AKBB001',678900, 5, 6),
 ('BVTB001',548985, 2, 3),

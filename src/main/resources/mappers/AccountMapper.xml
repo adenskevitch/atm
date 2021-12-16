@@ -24,6 +24,11 @@
 		Where
 		c.number = #{number}
 	</select>
+
+	<select id="getBankInfo" resultMap="BankResultMap">
+		Select b.id as bank_id, b.name as bank_name, b.commission as bank_commission from Banks b left join
+		Accounts a on a.bank_id=b.id where a.number = #{number}
+	</select>
 	
 	<update id="changeAccountMoney">
 		<include refid="setMoney"/>

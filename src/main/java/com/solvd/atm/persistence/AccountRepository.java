@@ -1,6 +1,7 @@
 package com.solvd.atm.persistence;
 
 import com.solvd.atm.domain.Account;
+import com.solvd.atm.domain.Bank;
 import com.solvd.atm.domain.Card;
 import org.apache.ibatis.annotations.Param;
 
@@ -21,6 +22,8 @@ public interface AccountRepository {
 
     //    set account unlock
     void unblockAccount(Account account);
+
+    Bank getBankInfo(Account account);
 
 }
 

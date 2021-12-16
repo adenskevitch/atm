@@ -6,6 +6,7 @@ public class Bank {
 
     private Long id;
     private String name;
+    private Double commission;
     private List<Atm> atms;
     private List<Account> accounts;
 
@@ -23,6 +24,14 @@ public class Bank {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Double getCommission() {
+        return commission;
+    }
+
+    public void setCommission(Double commission) {
+        this.commission = commission;
     }
 
     public List<Atm> getAtms() {

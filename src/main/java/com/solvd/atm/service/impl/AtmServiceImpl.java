@@ -2,6 +2,7 @@ package com.solvd.atm.service.impl;
 
 import com.solvd.atm.domain.Account;
 import com.solvd.atm.domain.Atm;
+import com.solvd.atm.domain.Bank;
 import com.solvd.atm.domain.Card;
 import com.solvd.atm.domain.exception.InvalidDataException;
 import com.solvd.atm.persistence.AtmRepository;
@@ -171,6 +172,12 @@ public class AtmServiceImpl implements AtmService {
             if (checkBalance(money)) {
                 Scanner in = new Scanner(System.in);
                 Integer intMoney = money.intValue();
+                double commission = findCommission(account,Atm.getInstance())/100;
+                BigDecimal commissionSum = money.multiply(BigDecimal.valueOf(commission));
+                if(commission != 0.0){
+                    LOGGER.info("Withdrawal will cost " + commissionSum);
+                }
+                //добавить возможность отказаться от снятия
                 List<List<?>> banknotesVariants = moneyVariants(Atm.getInstance().getBlrRubBanknotes(), intMoney);
                 LOGGER.info("Select banknotes...\n");
                 IntStream.range(0, banknotesVariants.size())
@@ -184,7 +191,8 @@ public class AtmServiceImpl implements AtmService {
                                 .forEach(o -> Atm.getInstance().getBlrRubBanknotes().put((Integer) Atm.getInstance().getBlrRubBanknotes().keySet().toArray()[i],
                                         (Atm.getInstance().getBlrRubBanknotes().get((Integer) Atm.getInstance().getBlrRubBanknotes().keySet().toArray()[i]) - 1))));
                 LOGGER.info(Atm.getInstance().getBlrRubBanknotes());
-                accountService.decrementMoney(account, money);
+                BigDecimal fullAmount = money.add(commissionSum);
+                accountService.decrementMoney(account, fullAmount);
                 LOGGER.info("Take the money...");
             } else throw new InvalidDataException("Insufficient funds!");
         } catch (InvalidDataException e) {
@@ -200,12 +208,30 @@ public class AtmServiceImpl implements AtmService {
     }
 
     @Override
+    public Double findCommission(Account account, Atm atm){
+        Bank bank = accountService.getBank(account);
+        Bank atmBank = atmRepository.getBankInfo(atm);
+        if(!bank.getId().equals(atmBank.getId())){
+            return bank.getCommission();
+        }else{
+            return 0.0;
+        }
+    }
+
+    @Override
     public void transferMoney(Account account, String cardNumber, BigDecimal money) {
         Account destinationAccount = accountService.getAccountInfo(cardService.getByNumber(cardService.encryptSha256(cardNumber)));
             //check of account money on account
             try {
                 if (checkBalance(money)) {
-                    accountService.decrementMoney(account, money);
+                    double commission = findCommission(account,Atm.getInstance())/100;
+                    BigDecimal commissionSum = money.multiply(BigDecimal.valueOf(commission));
+                    if(commission != 0.0){
+                        LOGGER.info("Transfer will cost " + commissionSum);
+                    }
+                    //добавить возможность отказаться от снятия
+                    BigDecimal fullAmount = money.add(commissionSum);
+                    accountService.decrementMoney(account, fullAmount);
                     accountService.incrementMoney(destinationAccount, money);
                     LOGGER.info("Your transaction was successful");
                 } else throw new InvalidDataException("Insufficient funds.");
