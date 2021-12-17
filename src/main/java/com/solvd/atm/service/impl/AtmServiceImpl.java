@@ -78,11 +78,37 @@ public class AtmServiceImpl implements AtmService {
                 card = cardService.getByNumber(card.getNumber());
                 while (Account.getInstance().getNumber() != null && !card.getBlocked()) {
                     LOGGER.info("Select operation:\n1 - Cash withdrawal.\n2 - Money transfer. \n3 - View account balance. \n4 - Return card.");
-                    int selectNumber = in.nextInt();
+
+                    int selectNumber = 0;
+                    try {
+                        in = new Scanner(System.in);
+                        selectNumber = in.nextInt();
+                    } catch (InputMismatchException e) {
+                        LOGGER.info("Wrong data. Please input correct number.");
+                        break;
+                    }
+
                     switch (selectNumber) {
                         case 1: {
                             LOGGER.info("Enter the amount...");
-                            BigDecimal money = new BigDecimal(in.next());
+                            BigDecimal money = null;
+                            try {
+                                money = new BigDecimal(in.next());
+                            } catch (NullPointerException | NumberFormatException e) {
+                                LOGGER.info("Wrong data.");
+                                break;
+                            }
+                            // for (-100, 0 , 2.3, 4) cases
+                            if (money.floatValue() < 5) {
+                                LOGGER.info("Amount is too low. You can't withdraw it.");
+                                break;
+                            }
+                            // for (7.5, 123, 101) cases
+                            if (money.floatValue() % 5 != 0) {
+                                LOGGER.info("Wrong amount.");
+                                break;
+                            }
+
                             /*
                               Place for account money check
                              */
@@ -95,12 +121,18 @@ public class AtmServiceImpl implements AtmService {
                             String cardNumber = in.nextLine();
                             //check of card input (exception)
                             try {
-                                if (accountService.getAccountInfo(new Card(cardService.encryptSha256(cardNumber))) != null) {
+                                Card destinationCard = new Card(cardService.encryptSha256(cardNumber));
+
+                                if (accountService.getAccountInfo(destinationCard) != null &&
+                                        !Objects.equals(Account.getInstance().getNumber(),
+                                                accountService.getAccountInfo(destinationCard).getNumber()))
+                                {
                                     LOGGER.info("Enter the amount...");
                                     in = new Scanner(System.in);
                                     BigDecimal money = new BigDecimal(in.next());
                                     transferMoney(Account.getInstance(), cardNumber, money);
-                                } else throw new InvalidDataException("Check if entered card number is correctly!");
+
+                                } else throw new InvalidDataException("Check if entered card number is correct!");
                             } catch (InvalidDataException e) {
                                 LOGGER.info(e);
                             }
@@ -138,7 +170,14 @@ public class AtmServiceImpl implements AtmService {
     public void continueWork() {
         Scanner in = new Scanner(System.in);
         LOGGER.info("Do you want to continue?\n1 - Yes.\n2 - No.");
-        int selectNumber = in.nextInt();
+
+        int selectNumber = 0;
+        try {
+            selectNumber = in.nextInt();
+        } catch (Exception e) {
+            LOGGER.info("Wrong data. Please input correct number.");
+            selectNumber = 2;
+        }
         switch (selectNumber) {
             case 1:
                 break;
@@ -184,7 +223,19 @@ public class AtmServiceImpl implements AtmService {
                                 transform.apply(banknotesVariants.get(i)) +
                                 "\n")
                 .forEach(LOGGER::info);
-        List<?> resultVariant = banknotesVariants.get(in.nextInt() - 1);
+
+        int choise = 1;
+        try {
+            choise = in.nextInt();
+        } catch (InputMismatchException e) {
+            LOGGER.info("Wrong data.");
+        }
+
+        if (choise > 6 || choise < 1) {
+            choise = 1;
+        }
+
+        List<?> resultVariant = banknotesVariants.get(choise - 1);
         LOGGER.info(Atm.getInstance().getBlrRubBanknotes());
         IntStream.range(0, Atm.getInstance().getBlrRubBanknotes().size())
                 .forEach(i -> resultVariant.stream()
@@ -198,7 +249,6 @@ public class AtmServiceImpl implements AtmService {
     public void getMoney(Account account, BigDecimal money) {
         try {
             if (checkBalance(money)) {
-                Scanner in = new Scanner(System.in);
                 Integer intMoney = money.intValue();
                 double commission = findCommission(account, Atm.getInstance());
                 int selectNumber = useCommission(commission);
@@ -257,8 +307,15 @@ public class AtmServiceImpl implements AtmService {
         int number;
         if (commission != 0.0) {
             LOGGER.info("Operation will cost " + commission + "%");
-            LOGGER.info("\n1 - Continue.\n2 - Cancel.");
-            number = in.nextInt();
+            LOGGER.info("\n1 - Continue." +
+                    "\n2 - Cancel.");
+
+            try {
+                number = in.nextInt();
+            } catch (InputMismatchException e) {
+                LOGGER.info("Wrong input data.");
+                number = 2;
+            }
         } else {
             number = 1;
         }
@@ -327,7 +384,7 @@ public class AtmServiceImpl implements AtmService {
             // current variant of banknote set
             List<Integer> variant = new LinkedList<>();
             for (Map.Entry<Integer, Integer> entry : sumMap.entrySet()) {
-                Integer banknote = virtualCash / entry.getKey();
+                int banknote = virtualCash / entry.getKey();
                 // loop for add banknotes with same value
                 for (int i = 0; i < banknote & i < entry.getValue(); i++) {
                     variant.add(entry.getKey());
